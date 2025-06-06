@@ -1,0 +1,161 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "COCOMOEstimationInput",
+  "description": "Schema to guide effort estimation using the COCOMO (Constructive Cost Model) technique. Defines input parameters, output table structure, and rules for estimating effort based on KLoC, complexity, and project scale.",
+  "type": "object",
+  "properties": {
+    "estimationTechnique": {
+      "type": "string",
+      "const": "COCOMO Estimation",
+      "description": "Specifies that COCOMO estimation technique is being used."
+    },
+
+    "projectType": {
+      "type": "string",
+      "description": "Describes the type of project. E.g., Web App, Embedded System, Business Application, AI System",
+      "examples": ["Web App", "Embedded System", "Business Application", "AI System"]
+    },
+
+    "projectScale": {
+      "type": "string",
+      "enum": ["Small", "Medium", "Large", "Mega"],
+      "description": "Defines overall scale of the project influencing effort and number of modules."
+    },
+
+    "timeConstraint": {
+      "type": "string",
+      "description": "Approximate timeline expectation or deadline for the project.",
+      "examples": ["1 month", "3 months", "12 months"]
+    },
+
+    "estimatedModules": {
+      "type": "integer",
+      "description": "Number of modules (epics) to be generated. Mapped from project scale.",
+      "enum": [3, 5, 8, 12]
+    },
+
+    "effortRangeHours": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 2,
+      "items": { "type": "integer" },
+      "description": "Minimum and maximum total effort across all modules in hours."
+    },
+
+    "columnDefinitions": {
+      "type": "array",
+      "description": "Defines the structure of each row in the output effort estimation table.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "columnName": { "type": "string" },
+          "dataType": { "type": "string" },
+          "allowedValues": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "description": { "type": "string" }
+        },
+        "required": ["columnName", "dataType"]
+      },
+      "default": [
+        {
+          "columnName": "Module / Subsystem",
+          "dataType": "string",
+          "description": "The logical or functional unit being estimated."
+        },
+        {
+          "columnName": "Complexity",
+          "dataType": "string",
+          "allowedValues": ["S", "M", "L"],
+          "description": "Module complexity: S = Simple, M = Medium, L = Large."
+        },
+        {
+          "columnName": "KLoC",
+          "dataType": "number",
+          "description": "Estimated size of the module in Kilo Lines of Code (thousands of lines of code)."
+        },
+        {
+          "columnName": "Effort Estimate",
+          "dataType": "number",
+          "description": "Estimated development effort for the module in person-hours using COCOMO model."
+        },
+        {
+          "columnName": "Risk Level",
+          "dataType": "string",
+          "allowedValues": ["Low", "Medium", "High"],
+          "description": "Risk based on complexity, KLoC, and project scale."
+        },
+        {
+          "columnName": "Classification",
+          "dataType": "string",
+          "description": "Describes the module's nature: UI, Business Logic, Data Access, etc."
+        },
+        {
+          "columnName": "Effort Type",
+          "dataType": "string",
+          "allowedValues": ["Low", "Medium", "High"],
+          "description": "Overall effort complexity derived from module type and size."
+        },
+        {
+          "columnName": "Person-Days",
+          "dataType": "number",
+          "description": "Effort in person-days, computed from hours as (Effort Estimate ÷ 8)."
+        }
+      ]
+    },
+
+    "mappingsAndRules": {
+      "type": "object",
+      "description": "Defines mappings, logic, and rules to calculate effort and classify output attributes.",
+      "properties": {
+        "scaleToModuleCountAndKLoC": {
+          "Small": { "modules": 3, "KLoC": [1, 5] },
+          "Medium": { "modules": 5, "KLoC": [6, 15] },
+          "Large": { "modules": 8, "KLoC": [16, 30] },
+          "Mega": { "modules": 12, "KLoC": [31, 60] }
+        },
+
+        "cocomoEffortFormula": {
+          "type": "string",
+          "const": "Effort = a * (KLoC ^ b), where a and b depend on project class"
+        },
+
+        "projectClassCoefficients": {
+          "Organic": { "a": 2.4, "b": 1.05 },
+          "Semi-Detached": { "a": 3.0, "b": 1.12 },
+          "Embedded": { "a": 3.6, "b": 1.20 }
+        },
+
+        "riskMappingRules": [
+          "If complexity is 'S' and KLoC < 5 → Risk = Low",
+          "If complexity is 'M' and KLoC between 5 and 15 → Risk = Medium",
+          "If complexity is 'L' or KLoC > 15 → Risk = High"
+        ],
+
+        "effortTypeMappingRules": [
+          "Low if classification is 'Read-Only Module' or KLoC < 5",
+          "Medium if classification is 'Business Logic' and KLoC < 15",
+          "High if classification is 'UI + Logic' or KLoC > 15"
+        ],
+
+        "personDayFormula": {
+          "type": "string",
+          "const": "Person-Days = round(Effort Estimate ÷ 8)"
+        },
+
+        "moduleNamePatternRule": {
+          "type": "string",
+          "const": "Use functional names like 'Auth Service', 'Invoice Generator', 'Product Catalog'"
+        }
+      }
+    }
+  },
+
+  "required": [
+    "estimationTechnique",
+    "projectType",
+    "projectScale",
+    "timeConstraint"
+  ]
+}

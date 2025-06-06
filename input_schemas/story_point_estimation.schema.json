@@ -1,0 +1,162 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "StoryPointEstimationInput",
+  "description": "Schema to guide effort estimation using Story Point Estimation technique. Captures story-based inputs and defines rules to map effort, complexity, and risk into structured outputs.",
+  "type": "object",
+  "properties": {
+    "estimationTechnique": {
+      "type": "string",
+      "const": "Story Point Estimation",
+      "description": "Specifies the estimation technique."
+    },
+
+    "projectType": {
+      "type": "string",
+      "description": "The domain or nature of the software project.",
+      "examples": ["E-Commerce", "Banking System", "SaaS Platform", "HRMS Portal"]
+    },
+
+    "projectScale": {
+      "type": "string",
+      "enum": ["Small", "Medium", "Large", "Mega"],
+      "description": "Indicates the size and breadth of the project."
+    },
+
+    "timeConstraint": {
+      "type": "string",
+      "description": "Timeframe for delivery or development window.",
+      "examples": ["Sprint 1-2", "Quarterly release", "6 weeks"]
+    },
+
+    "estimatedModules": {
+      "type": "integer",
+      "description": "Number of modules (epics) to be generated. Mapped from project scale.",
+      "enum": [3, 5, 8, 12]
+    },
+
+    "effortRangeHours": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 2,
+      "items": { "type": "integer" },
+      "description": "Minimum and maximum total effort across all modules in hours."
+    },
+
+    "columnDefinitions": {
+      "type": "array",
+      "description": "Specifies the structure of each row in the output story table.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "columnName": { "type": "string" },
+          "dataType": { "type": "string" },
+          "allowedValues": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "description": { "type": "string" }
+        },
+        "required": ["columnName", "dataType"]
+      },
+      "default": [
+        {
+          "columnName": "Epic (Modules)",
+          "dataType": "string",
+          "description": "Functional domain grouping related user stories."
+        },
+        {
+          "columnName": "User Story",
+          "dataType": "string",
+          "description": "Feature or functionality expressed from a user's perspective."
+        },
+        {
+          "columnName": "Story Points",
+          "dataType": "integer",
+          "description": "Abstract relative measure of effort and complexity (typically Fibonacci numbers)."
+        },
+        {
+          "columnName": "Complexity",
+          "dataType": "string",
+          "allowedValues": ["Low", "Medium", "High"],
+          "description": "Technical or business complexity of the story."
+        },
+        {
+          "columnName": "Classification",
+          "dataType": "string",
+          "description": "Nature of the task. E.g., 'UI Enhancement', 'New Feature', 'API Call', 'Bug Fix'."
+        },
+        {
+          "columnName": "Risk Level",
+          "dataType": "string",
+          "allowedValues": ["Low", "Medium", "High"],
+          "description": "Estimated risk based on complexity, unknowns, or external dependencies."
+        },
+        {
+          "columnName": "Effort Type",
+          "dataType": "string",
+          "allowedValues": ["Low", "Medium", "High"],
+          "description": "Overall estimation of effort type, correlated with story points and complexity."
+        }
+      ]
+    },
+
+    "mappingsAndRules": {
+      "type": "object",
+      "description": "Logical rules and ranges to guide story point assignment, risk mapping, and complexity handling.",
+      "properties": {
+        "scaleToEpicCount": {
+          "Small": 3,
+          "Medium": 5,
+          "Large": 8,
+          "Mega": 12
+        },
+
+        "scaleToStoryPointTotal": {
+          "Small": [20, 50],
+          "Medium": [50, 100],
+          "Large": [100, 200],
+          "Mega": [200, 400]
+        },
+
+        "allowedStoryPoints": [1, 2, 3, 5, 8, 13, 21],
+
+        "storyPointAssignmentRules": [
+          "1–2 SP for trivial changes like minor UI tweaks or text fixes",
+          "3–5 SP for standard CRUD operations or one-screen forms",
+          "8–13 SP for integrations, multi-step workflows, or backend logic",
+          "21 SP for complex or cross-cutting stories affecting multiple systems"
+        ],
+
+        "complexityDerivationRules": [
+          "Low if story points are 1–3 and classification is 'UI Enhancement' or 'Bug Fix'",
+          "Medium if story points are 5–8 and classification involves logic or data manipulation",
+          "High if story points >= 13 or classification involves third-party systems or security-critical paths"
+        ],
+
+        "riskMappingRules": [
+          "Low if complexity is Low and classification is 'UI Enhancement'",
+          "Medium if complexity is Medium or story depends on integration or calculation",
+          "High if complexity is High or story involves unknown APIs, external systems, or migrations"
+        ],
+
+        "effortTypeMappingRules": [
+          "Low if story points are 1–3",
+          "Medium if story points are 5–8",
+          "High if story points >= 13"
+        ],
+
+        "userStoryFormatRule": {
+          "type": "string",
+          "const": "User stories must follow the format: 'As a [user role], I want to [action] so that [benefit]'"
+        }
+      }
+    }
+  },
+
+  "required": [
+    "estimationTechnique",
+    "projectType",
+    "projectScale",
+    "timeConstraint"
+  ]
+}

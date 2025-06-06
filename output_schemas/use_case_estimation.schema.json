@@ -1,0 +1,48 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "UseCaseEstimationOutput",
+  "type": "object",
+  "properties": {
+    "technique": {
+      "type": "string",
+      "enum": ["Use Case Estimation"]
+    },
+    "rows": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "useCaseName": { "type": "string" },
+          "complexity": { "type": "string", "enum": ["S", "M", "L"] },
+          "weight": { "type": "integer", "minimum": 0 },
+          "effortEstimateHours": { "type": "integer", "minimum": 0 },
+          "riskLevel": { "type": "string", "enum": ["Low", "Medium", "High"] },
+          "classification": { "type": "string" },
+          "effortType": { "type": "string", "enum": ["Low", "Medium", "High"] },
+          "personDays": { "type": "integer", "minimum": 0 }
+        },
+        "required": [
+          "useCaseName",
+          "complexity",
+          "weight",
+          "effortEstimateHours",
+          "riskLevel",
+          "classification",
+          "effortType",
+          "personDays"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "summary": {
+      "type": "object",
+      "properties": {
+        "totalWeight": { "type": "integer", "minimum": 0 },
+        "totalPersonDays": { "type": "integer", "minimum": 0 }
+      },
+      "required": ["totalWeight", "totalPersonDays"]
+    }
+  },
+  "required": ["technique", "rows", "summary"],
+  "additionalProperties": false
+}

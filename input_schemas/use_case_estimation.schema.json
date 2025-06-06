@@ -1,0 +1,163 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "UseCaseEstimationInput",
+  "description": "Schema to guide effort estimation using Use Case Based Estimation Technique. Includes project metadata, interdependent rules for estimating number of use cases, weight, effort, and risk.",
+  "type": "object",
+  "properties": {
+    "estimationTechnique": {
+      "type": "string",
+      "const": "Use Case Based Estimation",
+      "description": "Specifies the estimation method."
+    },
+
+    "projectType": {
+      "type": "string",
+      "description": "Describes the type of project. E.g., Web App, Mobile App, ML System, Data Platform",
+      "examples": ["Web App", "Mobile App", "ML System", "Data Platform"]
+    },
+
+    "projectScale": {
+      "type": "string",
+      "enum": ["Small", "Medium", "Large", "Mega"],
+      "description": "Defines overall size and scope of the project. Influences number of use cases and effort."
+    },
+
+    "timeConstraint": {
+      "type": "string",
+      "description": "Deadline or duration in terms of weeks/months.",
+      "examples": ["4 weeks", "3 months"]
+    },
+
+    "estimatedUseCases": {
+      "type": "integer",
+      "description": "Number of use cases to be generated. Mapped from project scale.",
+      "enum": [5, 8, 12, 20]
+    },
+
+    "effortRangeHours": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 2,
+      "items": { "type": "integer" },
+      "description": "Minimum and maximum total effort across all use cases in hours."
+    },
+
+    "columnDefinitions": {
+      "type": "array",
+      "description": "Defines structure of each row in the output table.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "columnName": { "type": "string" },
+          "dataType": { "type": "string" },
+          "allowedValues": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "description": { "type": "string" }
+        },
+        "required": ["columnName", "dataType"]
+      },
+      "default": [
+        {
+          "columnName": "Use Case Name",
+          "dataType": "string",
+          "description": "Brief name or title of the use case."
+        },
+        {
+          "columnName": "Complexity",
+          "dataType": "string",
+          "allowedValues": ["S", "M", "L"],
+          "description": "S = Simple, M = Medium, L = Large complexity."
+        },
+        {
+          "columnName": "Weight",
+          "dataType": "integer",
+          "description": "Effort weight based on complexity. Typically: S (1-5), M (6-15), L (16-25)."
+        },
+        {
+          "columnName": "Effort Estimate (Hours)",
+          "dataType": "integer",
+          "description": "Estimated effort required for this use case."
+        },
+        {
+          "columnName": "Risk Level",
+          "dataType": "string",
+          "allowedValues": ["Low", "Medium", "High"],
+          "description": "Determined based on complexity, weight, and project scale. See risk mapping rules."
+        },
+        {
+          "columnName": "Classification",
+          "dataType": "string",
+          "description": "Describes nature of functionality. E.g., 'UI + Logic', 'Transactional', 'Read-Only Query'"
+        },
+        {
+          "columnName": "Effort Type",
+          "dataType": "string",
+          "allowedValues": ["Low", "Medium", "High"],
+          "description": "Correlated to complexity and classification."
+        },
+        {
+          "columnName": "Person-Days",
+          "dataType": "number",
+          "description": "Effort in person-days, calculated as (Effort Hours / 8)."
+        }
+      ]
+    },
+
+    "mappingsAndRules": {
+      "type": "object",
+      "description": "Defines how values relate and depend on each other for LLM to follow.",
+      "properties": {
+        "scaleToUseCases": {
+          "Small": 5,
+          "Medium": 8,
+          "Large": 12,
+          "Mega": 20
+        },
+
+        "scaleToEffortRange": {
+          "Small": [40, 100],
+          "Medium": [100, 200],
+          "Large": [200, 350],
+          "Mega": [350, 600]
+        },
+
+        "complexityToWeightRange": {
+          "S": [1, 5],
+          "M": [6, 15],
+          "L": [16, 25]
+        },
+
+        "riskMappingRules": [
+          "If complexity is 'S' and weight <= 5 and project scale is 'Small' or 'Medium' → Risk = Low",
+          "If complexity is 'M' and weight between 6-15 and scale is 'Medium' or 'Large' → Risk = Medium",
+          "If complexity is 'L' and weight > 15 or scale is 'Large'/'Mega' → Risk = High"
+        ],
+
+        "effortTypeMappingRules": [
+          "Low if complexity is 'S' and classification is 'Read-Only Query'",
+          "Medium if complexity is 'M' and classification is 'Transactional'",
+          "High if complexity is 'L' or classification is 'UI + Logic'"
+        ],
+
+        "useCaseNamePatternRule": {
+          "type": "string",
+          "const": "Use Case Name should follow a short imperative verb + object format. E.g., 'Login User', 'Search Product', 'Create Invoice'"
+        },
+
+        "personDayCalculation": {
+          "type": "string",
+          "const": "Person-Days = round(Effort Estimate (Hours) ÷ 8)"
+        }
+      }
+    }
+  },
+
+  "required": [
+    "estimationTechnique",
+    "projectType",
+    "projectScale",
+    "timeConstraint"
+  ]
+}

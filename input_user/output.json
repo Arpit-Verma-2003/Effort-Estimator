@@ -1,0 +1,144 @@
+```json
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "StoryPointEstimationOutput",
+  "type": "object",
+  "properties": {
+    "technique": {
+      "type": "string",
+      "enum": ["Story Point Estimation"]
+    },
+    "rows": [
+      {
+        "epic": "Patient Management",
+        "userStory": "As an admin, I want to register a new patient so that I can maintain patient records.",
+        "storyPoints": 3,
+        "complexity": "Medium",
+        "classification": "New Feature",
+        "riskLevel": "Low",
+        "effortType": "Medium"
+      },
+      {
+        "epic": "Appointment Management",
+        "userStory": "As a patient, I want to book an appointment with a doctor so that I can receive medical care.",
+        "storyPoints": 5,
+        "complexity": "Medium",
+        "classification": "New Feature",
+        "riskLevel": "Low",
+        "effortType": "Medium"
+      },
+      {
+        "epic": "Appointment Management",
+        "userStory": "As a doctor/admin, I want to manage appointments (view, accept, reschedule, cancel) so that I can efficiently manage my schedule.",
+        "storyPoints": 8,
+        "complexity": "High",
+        "classification": "New Feature",
+        "riskLevel": "Medium",
+        "effortType": "High"
+      },
+      {
+        "epic": "Electronic Health Records",
+        "userStory": "As a doctor, I want to create and update patient health records so that I can maintain accurate medical information.",
+        "storyPoints": 13,
+        "complexity": "High",
+        "classification": "New Feature",
+        "riskLevel": "Medium",
+        "effortType": "High"
+      },
+      {
+        "epic": "Prescription Management",
+        "userStory": "As a doctor, I want to generate and upload e-prescriptions so that patients can easily access their prescriptions.",
+        "storyPoints": 5,
+        "complexity": "Medium",
+        "classification": "New Feature",
+        "riskLevel": "Low",
+        "effortType": "Medium"
+      },
+      {
+        "epic": "Lab Management",
+        "userStory": "As a patient, I want to request or schedule lab tests so that I can undergo necessary medical tests.",
+        "storyPoints": 5,
+        "complexity": "Medium",
+        "classification": "New Feature",
+        "riskLevel": "Low",
+        "effortType": "Medium"
+      },
+      {
+        "epic": "Lab Management",
+        "userStory": "As a lab technician, I want to upload lab reports so that doctors can access the results.",
+        "storyPoints": 3,
+        "complexity": "Medium",
+        "classification": "New Feature",
+        "riskLevel": "Low",
+        "effortType": "Medium"
+      },
+      {
+        "epic": "Pharmacy Management",
+        "userStory": "As a pharmacist, I want to manage medication inventory and dispense medications so that patients can receive their prescribed drugs.",
+        "storyPoints": 8,
+        "complexity": "High",
+        "classification": "New Feature",
+        "riskLevel": "Medium",
+        "effortType": "High"
+      },
+      {
+        "epic": "Billing and Payments",
+        "userStory": "As a patient/admin, I want to view and pay bills online so that I can manage my payments conveniently.",
+        "storyPoints": 8,
+        "complexity": "High",
+        "classification": "New Feature",
+        "riskLevel": "Medium",
+        "effortType": "High"
+      },
+      {
+        "epic": "Feedback and Ratings",
+        "userStory": "As a patient, I want to provide feedback and rate services so that I can share my experience.",
+        "storyPoints": 3,
+        "complexity": "Low",
+        "classification": "New Feature",
+        "riskLevel": "Low",
+        "effortType": "Medium"
+      },
+      {
+        "epic": "User Authentication",
+        "userStory": "As a user, I want to have a multi-role login system so that I can access the system with my designated role.",
+        "storyPoints": 8,
+        "complexity": "High",
+        "classification": "New Feature",
+        "riskLevel": "Medium",
+        "effortType": "High"
+      },
+      {
+        "epic": "Notifications",
+        "userStory": "As a user, I want to receive SMS/email notifications for appointment reminders and test results so that I stay informed.",
+        "storyPoints": 8,
+        "complexity": "High",
+        "classification": "New Feature",
+        "riskLevel": "Medium",
+        "effortType": "High"
+      },
+      {
+        "epic": "Data Security",
+        "userStory": "As an admin, I want role-based access and encryption for health records so that data is secure and private.",
+        "storyPoints": 13,
+        "complexity": "High",
+        "classification": "New Feature",
+        "riskLevel": "High",
+        "effortType": "High"
+      },
+      {
+        "epic": "Reporting",
+        "userStory": "As an admin, I want a dashboard with analytics (daily appointments, income reports, service ratings) so that I can monitor the system's performance.",
+        "storyPoints": 13,
+        "complexity": "High",
+        "classification": "New Feature",
+        "riskLevel": "High",
+        "effortType": "High"
+      }
+    ],
+    "summary": {
+      "totalStoryPoints": 108
+    }
+  }
+}
+```
