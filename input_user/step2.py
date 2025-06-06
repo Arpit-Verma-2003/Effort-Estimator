@@ -1,3 +1,4 @@
+# step - 2 - Store extracted text from document in ChromaDB
 import os
 import shutil
 import chromadb

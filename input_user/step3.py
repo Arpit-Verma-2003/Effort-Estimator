@@ -1,3 +1,4 @@
+# step - 3 - Use LLM to generate epics and desired output by using chromaDB and input + output schema
 import os
 import json
 import google.generativeai as genai

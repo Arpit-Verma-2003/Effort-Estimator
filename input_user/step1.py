@@ -1,3 +1,4 @@
+# step - 1 - Take inputs from user and save to input_payload.json
 import json
 import os
 import base64
