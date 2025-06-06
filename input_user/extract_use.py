@@ -2,6 +2,8 @@ import os
 import json
 import google.generativeai as genai
 import chromadb
+from dotenv import load_dotenv
+load_dotenv()
 
 # Step 0: Load input payload
 with open("input_payload.json", "r") as f:
@@ -39,7 +41,9 @@ with open(input_schema_path, "r") as f:
 with open(output_schema_path, "r") as f:
     output_schema_json = f.read()
 
-genai.configure(api_key="AIzaSyDl7aLQwdIUMm-U19a3K-39_sLWdLUxoPw")
+# Configure Gemini API
+genai_api_key = os.getenv("GEMINI_API_KEY")
+genai.configure(api_key=genai_api_key)
 chroma_client = chromadb.PersistentClient(path="./chroma_db")
 collection = chroma_client.get_or_create_collection("documents")
 

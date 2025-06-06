@@ -3,9 +3,12 @@ import shutil
 import chromadb
 import google.generativeai as genai
 import json
+from dotenv import load_dotenv
+load_dotenv()
 
 # Configure Gemini API
-genai.configure(api_key="AIzaSyDl7aLQwdIUMm-U19a3K-39_sLWdLUxoPw")
+genai_api_key = os.getenv("GEMINI_API_KEY")
+genai.configure(api_key=genai_api_key)
 
 chroma_path = "./chroma_db"
 
