@@ -25,15 +25,16 @@
     "timeConstraint": {
       "type": "string",
       "description": "Deadline or duration in terms of weeks/months.",
-      "examples": ["4 weeks", "3 months"]
+      "examples": ["1 month", "3 months"]
     },
 
     "estimatedUseCases": {
       "type": "integer",
       "description": "Number of use cases to be generated. Mapped from project scale.",
-      "enum": [5, 8, 12, 20]
+      "enum": [5, 8, 12, 15]
     },
 
+    // Total effort bounds per scale, calculated internally
     "effortRangeHours": {
       "type": "array",
       "minItems": 2,
@@ -105,55 +106,77 @@
       ]
     },
 
+    // Mapping logic used internally by LLM to generate accurate values
     "mappingsAndRules": {
       "type": "object",
       "description": "Defines how values relate and depend on each other for LLM to follow.",
       "properties": {
+
         "scaleToUseCases": {
-          "Small": 5,
-          "Medium": 8,
-          "Large": 12,
-          "Mega": 20
+        "description": "Maps project scale to a fixed number of use cases. The LLM should generate only this number of use cases for a given scale. If the natural number of use cases exceeds this count, similar ones must be merged or combined to meet the target.",
+        "properties": {
+          "Small": { "type": "integer", "const": 5 },
+          "Medium": { "type": "integer", "const": 8 },
+          "Large": { "type": "integer", "const": 12 },
+          "Mega": { "type": "integer", "const": 15 }
+          }
         },
 
         "scaleToEffortRange": {
-          "Small": [40, 100],
-          "Medium": [100, 200],
-          "Large": [200, 350],
-          "Mega": [350, 600]
+        "description": "Defines the permissible range (in hours) for total effort estimates based on the project scale. LLM must ensure the total estimated effort falls within this range.",
+        "properties": {
+          "Small": {"range": [40, 100]},
+          "Medium": {"range": [100, 200]},
+          "Large": {"range": [200, 350]},
+          "Mega": {"range": [350, 600]}
         },
 
         "complexityToWeightRange": {
+        "description": "Maps the complexity level of a use case to its corresponding effort weight range. LLM should assign weights within the range based on the use case’s complexity.",
+        "properties": {
           "S": [1, 5],
           "M": [6, 15],
           "L": [16, 25]
         },
 
-        "riskMappingRules": [
-          "If complexity is 'S' and weight <= 5 and project scale is 'Small' or 'Medium' → Risk = Low",
-          "If complexity is 'M' and weight between 6-15 and scale is 'Medium' or 'Large' → Risk = Medium",
-          "If complexity is 'L' and weight > 15 or scale is 'Large'/'Mega' → Risk = High"
-        ],
+        "riskMappingRules": {
+        "description": "Rules to infer risk level from use case complexity, assigned weight, and overall project scale.",
+        "items": {
+          "examples": [
+            "If complexity is 'S' and weight <= 5 and project scale is 'Small' or 'Medium' → Risk = Low",
+            "If complexity is 'M' and weight between 6-15 and scale is 'Medium' or 'Large' → Risk = Medium",
+            "If complexity is 'L' and weight > 15 or scale is 'Large'/'Mega' → Risk = High"
+          ]
+        }
+      },
 
-        "effortTypeMappingRules": [
-          "Low if complexity is 'S' and classification is 'Read-Only Query'",
-          "Medium if complexity is 'M' and classification is 'Transactional'",
-          "High if complexity is 'L' or classification is 'UI + Logic'"
-        ],
+        "effortTypeMappingRules": {
+          "description": "Defines effort type (Low, Medium, High) based on a combination of complexity and classification type (e.g., UI, Logic, Query).",
+          "items": {
+            "examples": [
+              "Low if complexity is 'S' and classification is 'Read-Only Query'",
+              "Medium if complexity is 'M' and classification is 'Transactional'",
+              "High if complexity is 'L' or classification is 'UI + Logic'"
+            ]
+          }
+        },
 
         "useCaseNamePatternRule": {
           "type": "string",
+          "description": "Instruction for use case naming. Use cases must follow the naming format: imperative verb + object (e.g., 'Create Invoice', 'Search Product', 'Update Profile').",
           "const": "Use Case Name should follow a short imperative verb + object format. E.g., 'Login User', 'Search Product', 'Create Invoice'"
         },
 
         "personDayCalculation": {
           "type": "string",
+          "description": "Rule to convert estimated effort in hours to person-days by dividing by 8 and rounding to the nearest whole number.",
           "const": "Person-Days = round(Effort Estimate (Hours) ÷ 8)"
         }
       }
     }
   },
 
+  // Only the top-level project fields are required from user
   "required": [
     "estimationTechnique",
     "projectType",

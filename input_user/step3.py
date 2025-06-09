@@ -3,6 +3,8 @@ import os
 import json
 import google.generativeai as genai
 import chromadb
+import re
+import google.ai.generativelanguage as genai_types
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -49,7 +51,7 @@ chroma_client = chromadb.PersistentClient(path="./chroma_db")
 collection = chroma_client.get_or_create_collection("documents")
 
 # Step 3: User query + embedding
-user_query = "Generate use cases for the project"
+user_query = "Generate use cases/epics/modules for a new project based on the provided document and rate card."
 query_embedding = genai.embed_content(model="models/embedding-001", content=user_query)["embedding"]
 
 # print("Available documents in collection:", collection.peek(3))
@@ -58,11 +60,11 @@ query_embedding = genai.embed_content(model="models/embedding-001", content=user
 # Step 4: Retrieve relevant docs from ChromaDB
 results = collection.query(
     query_embeddings=[query_embedding],
-    n_results=3,
+    n_results=12,
     include=["metadatas", "documents"]
 )
 
-retrieved_texts = results['documents'][0]  # List of top 3 document texts
+retrieved_texts = list(dict.fromkeys(results['documents'][0]))  # List of top 9 document texts (unique)
 
 if not retrieved_texts:
     print("No relevant documents found in ChromaDB.")
@@ -91,7 +93,14 @@ Input JSON Schema:
 
 Expected Output JSON Format:
 {output_schema_json}
+
+Only and only provide produced JSON output. Do not provide any other text.
 """
+
+# ✅ Count total input tokens BEFORE sending to LLM
+model = genai.GenerativeModel("gemini-1.5-flash")
+input_token_count = model.count_tokens(prompt).total_tokens
+print(f"📏 Total input tokens going to Gemini: {input_token_count}")
 
 # Load the Gemini model
 model = genai.GenerativeModel("gemini-1.5-flash")
@@ -101,21 +110,24 @@ response = model.generate_content(
     prompt,
     generation_config={
         "max_output_tokens": 1500,
-        "temperature": 0.7,
-        "top_p": 0.8
+        "temperature": 0.0,
+        "top_p": 1.0
     }
 )
 
 # Save the response to output.json
 output_path = "output.json"
 
+raw_text = response.text.strip()
+clean_text = re.sub(r"^```(?:json)?\s*|```$", "", raw_text.strip(), flags=re.MULTILINE)
+
 # Try to parse response as JSON (if valid), else write raw text
 try:
-    parsed_output = json.loads(response.text)
+    parsed_output = json.loads(clean_text)
     with open(output_path, "w") as f:
         json.dump(parsed_output, f, indent=2)
 except json.JSONDecodeError:
     with open(output_path, "w") as f:
-        f.write(response.text)
+        f.write(clean_text)
 
 print(f"\n✅ Output written to {output_path}")

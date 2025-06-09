@@ -12,28 +12,29 @@
 
     "projectType": {
       "type": "string",
-      "description": "The nature or category of the system being built.",
-      "examples": ["CRM System", "Banking App", "Healthcare Platform", "E-Commerce Site"]
+      "description": "Describes the type of project. E.g., Web App, Mobile App, ML System, Data Platform",
+      "examples": ["Web App", "Mobile App", "ML System", "Data Platform"]
     },
 
     "projectScale": {
       "type": "string",
       "enum": ["Small", "Medium", "Large", "Mega"],
-      "description": "Defines the size and complexity of the overall project."
+      "description": "Defines overall size and scope of the project. Influences number of use cases and effort."
     },
 
     "timeConstraint": {
       "type": "string",
       "description": "Expected duration for the project or phase.",
-      "examples": ["2 sprints", "6 weeks", "Q2 delivery"]
+      "examples": ["1 month", "3 months"]
     },
 
-    "estimatedModules": {
+    "estimatedEpics": {
       "type": "integer",
       "description": "Number of modules (epics) to be generated. Mapped from project scale.",
-      "enum": [3, 5, 8, 12]
+      "enum": [5, 8, 12, 15]
     },
 
+    // Total effort bounds per scale, calculated internally
     "effortRangeHours": {
       "type": "array",
       "minItems": 2,
@@ -111,44 +112,58 @@
       ]
     },
 
+    // Rule set for driving size mapping and interpretation
     "mappingsAndRules": {
       "type": "object",
-      "description": "Guidelines to translate story attributes into sizes, hours, and risks.",
+      "description": "Defines how values relate and depend on each other for LLM to follow.",
       "properties": {
+
         "scaleToEpicCount": {
-          "Small": 3,
-          "Medium": 5,
-          "Large": 8,
-          "Mega": 12
+        "description": "Maps project scale to a fixed number of epics. The LLM should generate only this number of epics for a given scale. If the natural number of epics exceeds this count, similar ones must be merged or combined to meet the target.",
+        "properties": {
+          "Small": { "type": "integer", "const": 5 },
+          "Medium": { "type": "integer", "const": 8 },
+          "Large": { "type": "integer", "const": 12 },
+          "Mega": { "type": "integer", "const": 15 }
+          }
         },
 
-        "scaleToEffortRangeHours": {
-          "Small": [40, 100],
-          "Medium": [100, 200],
-          "Large": [200, 350],
-          "Mega": [350, 600]
+        "scaleToEffortRange": {
+        "description": "Defines the permissible range (in hours) for total effort estimates based on the project scale. LLM must ensure the total estimated effort falls within this range.",
+        "properties": {
+          "Small": {"range": [40, 100]},
+          "Medium": {"range": [100, 200]},
+          "Large": {"range": [200, 350]},
+          "Mega": {"range": [350, 600]}
         },
 
         "sizeToEffortMapping": {
-          "XS": [2, 4],
-          "S": [4, 8],
-          "M": [8, 16],
-          "L": [16, 32],
-          "XL": [32, 64]
-        },
+        "type": "object",
+        "description": "Maps T-shirt sizes to estimated effort in hours as a range.",
+        "properties": {
+            "XS": [2, 4],
+            "S": [4, 8],
+            "M": [8, 16],
+            "L": [16, 32],
+            "XL": [32, 64]
+          }
+        }
 
+        // Complexity inferred from T-shirt size and classification
         "complexityMappingRules": [
           "Low if size is XS or S and classification is 'UI Change'",
           "Medium if size is M and classification includes 'Integration'",
           "High if size is L or XL or classification is 'Backend Processing'"
         ],
 
+        // Risk derived from complexity and classification
         "riskMappingRules": [
           "Low if complexity is Low and classification is 'UI Change'",
           "Medium if complexity is Medium and classification includes 'Integration'",
           "High if complexity is High or classification is 'Backend Processing'"
         ],
 
+        // Effort type by size and complexity
         "effortTypeMappingRules": [
           "Low if size is XS or S",
           "Medium if size is M",
@@ -156,11 +171,13 @@
         ],
 
         "personDayFormula": {
-          "type": "string",
-          "const": "Person-Days = round(Effort Estimate (Hours) ÷ 8)"
+        "type": "string",
+        "const": "Person-Days = round(Effort Estimate (Hours) ÷ 8)",
+        "description": "Formula used to convert effort hours into person-days assuming 8 working hours per day."
         },
-
+ 
         "userStoryNamingRule": {
+          "description" : "Format rule for naming user stories",
           "type": "string",
           "const": "User Story should be written in the format: 'As a [user], I want to [action] so that [goal]'"
         }
@@ -168,6 +185,7 @@
     }
   },
 
+  // Required input fields from backend or user
   "required": [
     "estimationTechnique",
     "projectType",

@@ -28,24 +28,40 @@ with open("input_payload.json", "r") as f:
 
 document_text = input_data.get("document_text", "No document text found.")
 
-# Generate embeddings using Gemini
-response = genai.embed_content(model="models/embedding-001", content=document_text)
-document_embedding = response["embedding"]
+# Chunking logic
+def chunk_text(text, chunk_size=500, overlap=100):
+    words = text.split()
+    chunks = []
+    i = 0
+    while i < len(words):
+        chunk = words[i:i+chunk_size]
+        chunks.append(" ".join(chunk))
+        i += chunk_size - overlap
+    return chunks
 
-# Store embeddings in ChromaDB
-collection.add(
-    ids=["doc1"],
-    embeddings=[document_embedding],
-    documents=[document_text],
-    metadatas=[{
-        "estimation_technique": input_data.get("estimation_technique"),
-        "project_type": input_data.get("project_type"),
-        "time_constraint": input_data.get("time_constraint"),
-        "project_scale": input_data.get("project_scale"),
-        "project_budget": input_data.get("project_budget")
-    }]
-)
+chunks = chunk_text(document_text)
 
-print("Total docs in collection:", collection.count())
+# Store chunks with embeddings
+for idx, chunk in enumerate(chunks):
+    try:
+        response = genai.embed_content(model="models/embedding-001", content=chunk)
+        embedding = response["embedding"]
+        collection.add(
+            ids=[f"doc_chunk_{idx}"],
+            embeddings=[embedding],
+            documents=[chunk],
+            metadatas=[{
+                "chunk_index": idx,
+                "estimation_technique": input_data.get("estimation_technique"),
+                "project_type": input_data.get("project_type"),
+                "time_constraint": input_data.get("time_constraint"),
+                "project_scale": input_data.get("project_scale"),
+                "project_budget": input_data.get("project_budget")
+            }]
+        )
+    except Exception as e:
+        print(f"⚠️ Failed to embed chunk {idx}: {e}")
+
+print("Total chunks saved in collection:", collection.count())
 
 print("✅ Document stored in ChromaDB using Gemini embeddings.")
