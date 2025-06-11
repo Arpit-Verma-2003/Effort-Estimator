@@ -5,6 +5,7 @@ import google.generativeai as genai
 import chromadb
 import re
 import google.ai.generativelanguage as genai_types
+import shutil
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -96,6 +97,7 @@ Input JSON Schema:
 {input_schema_json}
 
 Expected Output JSON Format:
+Below is a JSON Schema defining the expected format. Use this only as guidance — you must generate real JSON data conforming to this structure.
 {output_schema_json}
 
 Only and only provide produced JSON output. Do not provide any other text.
@@ -135,3 +137,12 @@ except json.JSONDecodeError:
         f.write(clean_text)
 
 print(f"\n✅ Output written to {output_path}")
+
+# Delete input_payload.json
+input_payload_path = "input_payload.json"
+if os.path.exists(input_payload_path):
+    try:
+        os.remove(input_payload_path)
+        print(f"\n🗑️ Deleted input file: {input_payload_path}")
+    except Exception as e:
+        print(f"\n⚠️ Failed to delete {input_payload_path}: {e}")

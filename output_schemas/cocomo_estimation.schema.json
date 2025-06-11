@@ -1,6 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "COCOMOEstimationOutput",
+  "description": "Generate actual JSON data conforming to this schema, not the schema itself. The output must include real use case estimation values in the 'rows' array.",
   "type": "object",
   "properties": {
     "technique": {
