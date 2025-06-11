@@ -49,17 +49,8 @@
         ],
         "additionalProperties": false
       }
-    },
-    "summary": {
-      "type": "object",
-      "properties": {
-        "totalUnadjustedFP": { "type": "number", "minimum": 0 },
-        "totalAdjustedFP": { "type": "number", "minimum": 0 },
-        "totalEffortPersonDays": { "type": "number", "minimum": 0 }
-      },
-      "required": ["totalUnadjustedFP", "totalAdjustedFP", "totalEffortPersonDays"]
     }
   },
-  "required": ["technique", "rows", "summary"],
+  "required": ["technique", "rows"],
   "additionalProperties": false
 }

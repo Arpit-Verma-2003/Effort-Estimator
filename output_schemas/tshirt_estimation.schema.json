@@ -35,15 +35,8 @@
         ],
         "additionalProperties": false
       }
-    },
-    "summary": {
-      "type": "object",
-      "properties": {
-        "totalPersonDays": { "type": "number", "minimum": 0 }
-      },
-      "required": ["totalPersonDays"]
     }
   },
-  "required": ["technique", "rows", "summary"],
+  "required": ["technique", "rows"],
   "additionalProperties": false
 }

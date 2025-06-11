@@ -121,13 +121,17 @@
       "description": "Defines logic for function point weight mapping, adjustment, and effort/risk derivation.",
       "properties": {
         "scaleToEpicCount": {
-          "Small": 3,
-          "Medium": 5,
-          "Large": 8,
-          "Mega": 12
+        "description": "Maps project scale to a fixed number of epics. The LLM should generate only this number of epics for a given scale. If the natural number of epics exceeds this count, similar ones must be merged or combined to meet the target.",
+        "properties": {
+          "Small": { "type": "integer", "const": 5 },
+          "Medium": { "type": "integer", "const": 8 },
+          "Large": { "type": "integer", "const": 12 },
+          "Mega": { "type": "integer", "const": 15 }
+          }
         },
 
         "scaleToFunctionPointRange": {
+          "description": "Defines the permissible range for function point estimates based on the project scale. LLM must ensure the function point falls within this range.",
           "Small": [20, 50],
           "Medium": [50, 120],
           "Large": [120, 200],

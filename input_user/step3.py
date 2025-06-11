@@ -79,6 +79,10 @@ context = "\n\n".join(retrieved_texts)
 # print(retrieved_texts)
 # Step 4: Build prompt with retrieved docs
 context = "\n\n".join(retrieved_texts)
+# metadata info - Input details like - Project Type, Project Scale, Time Constraint, Project Budget
+# context - The retrieved documents chunks
+# input schema - Input JSON schema
+# output schema - Output JSON schema
 prompt = f"""
 You are a helpful assistant. Based on the following **project metadata** and **retrieved documents**, generate output in the specified JSON format.
 
