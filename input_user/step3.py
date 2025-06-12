@@ -50,45 +50,76 @@ genai_api_key = os.getenv("GEMINI_API_KEY")
 genai.configure(api_key=genai_api_key)
 chroma_client = chromadb.PersistentClient(path="./chroma_db")
 collection = chroma_client.get_or_create_collection("documents")
+total_chunks = collection.count()
+print("Total chunks saved in collection:", total_chunks)
 
 # Step 3: User query + embedding
 user_query = "Generate use cases/epics/modules for a new project based on the provided document and rate card."
 query_embedding = genai.embed_content(model="models/embedding-001", content=user_query)["embedding"]
 
-# print("Available documents in collection:", collection.peek(3))
-
-
 # Step 4: Retrieve relevant docs from ChromaDB
-results = collection.query(
-    query_embeddings=[query_embedding],
-    n_results=12,
-    include=["metadatas", "documents"]
-)
+retrieved_texts = []
 
-retrieved_texts = list(dict.fromkeys(results['documents'][0]))  # List of top 9 document texts (unique)
+if total_chunks > 20:
 
-if not retrieved_texts:
-    print("No relevant documents found in ChromaDB.")
-    retrieved_texts = ["No context available."]
+    # Large document — summarize top 25% of chunks
+    top_k = max(1, total_chunks // 4)
+    print(f"📄 Large document detected. Summarizing top {top_k} chunks for final context.")
+    results = collection.query(
+        query_embeddings=[query_embedding],
+        n_results=top_k,
+        include=["metadatas", "documents"]
+    )
+    top_chunks = list(dict.fromkeys(results['documents'][0]))
+
+    # Join for summarization
+    long_context = "\n\n".join(top_chunks)
+
+    # Summarize using Gemini before including in final prompt
+    summarization_prompt = f"""You are a summarization assistant. Summarize the following document content without losing important technical and structural information. Your summary should retain enough detail to help another model generate accurate use cases or epics or modules for a software project. Focus on requirements, functions, workflows, and modules. Try to include all important information, don't over focus on summarization or don't over summarize.
+    Document Chunks: {long_context}
+    Output: Summarized version preserving all key information for downstream processing.""".strip()
+    summary_model = genai.GenerativeModel("gemini-1.5-flash")
+    summary_response = summary_model.generate_content(
+        summarization_prompt,
+        generation_config={
+            "max_output_tokens": 2000,
+            "temperature": 0.1,
+            "top_p": 1.0
+        }
+    )
+    summarized_context = summary_response.text.strip()
+    context = summarized_context
+    print(f"📄Summarized context: {summarized_context}")
+else:
+    results = collection.query(
+        query_embeddings=[query_embedding],
+        n_results=12,
+        include=["metadatas", "documents"]
+    )
+    retrieved_texts = list(dict.fromkeys(results['documents'][0]))  # List of top 9 document texts (unique)
+    # if not retrieved_texts:
+    # print("No relevant documents found in ChromaDB.")
+    # retrieved_texts = ["No context available."]
+    context = "\n\n".join(retrieved_texts)
 
 # Step 5: Build project metadata string
 metadata_info = "\n".join(f"{k}: {v}" for k, v in project_metadata.items() if v is not None)
 
-# Step 6: Final Prompt Assembly
-context = "\n\n".join(retrieved_texts)
-
-# print(retrieved_texts)
 # Step 4: Build prompt with retrieved docs
 context = "\n\n".join(retrieved_texts)
+
 # metadata info - Input details like - Project Type, Project Scale, Time Constraint, Project Budget
 # context - The retrieved documents chunks
 # input schema - Input JSON schema
 # output schema - Output JSON schema
+
 prompt = f"""
 You are a helpful assistant. Based on the following **project metadata** and **retrieved documents**, generate output in the specified JSON format.
 
 Project Metadata:
 {metadata_info}
+The time constraints is in months, so plan accordingly.
 
 Project Documents:
 {context}
