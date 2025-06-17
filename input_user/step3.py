@@ -12,7 +12,8 @@ load_dotenv()
 # Step 0: Load input payload
 with open("input_payload.json", "r") as f:
     input_data = json.load(f)
-
+with open("../output_schemas/cost_estimation.schema.json", "r") as f:
+    cost_estimation_schema = f.read()
 # Extract project metadata
 estimation_technique = input_data.get("estimation_technique", "").lower()
 project_metadata = {
@@ -128,10 +129,22 @@ Input JSON Schema:
 {input_schema_json}
 
 Expected Output JSON Format:
-Below is a JSON Schema defining the expected format. Use this only as guidance — you must generate real JSON data conforming to this structure.
+Below are two JSON Schemas defining the expected structure.
+Use them as guidance only — your task is to produce real JSON data matching these structures.
+1. Use Case Estimation Output Schema:
 {output_schema_json}
 
+2. Cost Estimation Output Schema:
+Consider the project budget while planning the cost estimation (it is present in the project metadata). Make sure you do not exceed the total budget. The cost estimation should be in INR.
+{cost_estimation_schema}
 Only and only provide produced JSON output. Do not provide any other text.
+Expected Combined Output Format:
+```json
+{{
+  "useCaseEstimation": {{ ... }},
+  "costEstimation": {{ ... }}
+}}
+Only and only provide valid JSON data conforming to the above combined format.
 """
 
 # ✅ Count total input tokens BEFORE sending to LLM
@@ -146,7 +159,7 @@ model = genai.GenerativeModel("gemini-1.5-flash")
 response = model.generate_content(
     prompt,
     generation_config={
-        "max_output_tokens": 1500,
+        "max_output_tokens": 2000,
         "temperature": 0.0,
         "top_p": 1.0
     }
@@ -170,10 +183,10 @@ except json.JSONDecodeError:
 print(f"\n✅ Output written to {output_path}")
 
 # Delete input_payload.json
-input_payload_path = "input_payload.json"
-if os.path.exists(input_payload_path):
-    try:
-        os.remove(input_payload_path)
-        print(f"\n🗑️ Deleted input file: {input_payload_path}")
-    except Exception as e:
-        print(f"\n⚠️ Failed to delete {input_payload_path}: {e}")
+# input_payload_path = "input_payload.json"
+# if os.path.exists(input_payload_path):
+#     try:
+#         os.remove(input_payload_path)
+#         print(f"\n🗑️ Deleted input file: {input_payload_path}")
+#     except Exception as e:
+#         print(f"\n⚠️ Failed to delete {input_payload_path}: {e}")

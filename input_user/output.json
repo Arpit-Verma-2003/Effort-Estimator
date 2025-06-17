@@ -1,0 +1,162 @@
+{
+  "useCaseEstimation": {
+    "technique": "Use Case Estimation",
+    "rows": [
+      {
+        "useCaseName": "Register New Patient",
+        "complexity": "M",
+        "weight": 10,
+        "effortEstimateHours": 80,
+        "riskLevel": "Medium",
+        "classification": "UI + Logic",
+        "effortType": "Medium",
+        "personDays": 10
+      },
+      {
+        "useCaseName": "Book Appointment",
+        "complexity": "M",
+        "weight": 8,
+        "effortEstimateHours": 64,
+        "riskLevel": "Medium",
+        "classification": "UI + Logic",
+        "effortType": "Medium",
+        "personDays": 8
+      },
+      {
+        "useCaseName": "Manage Appointments",
+        "complexity": "L",
+        "weight": 20,
+        "effortEstimateHours": 160,
+        "riskLevel": "High",
+        "classification": "UI + Logic",
+        "effortType": "High",
+        "personDays": 20
+      },
+      {
+        "useCaseName": "Manage EHR",
+        "complexity": "L",
+        "weight": 22,
+        "effortEstimateHours": 176,
+        "riskLevel": "High",
+        "classification": "UI + Logic",
+        "effortType": "High",
+        "personDays": 22
+      },
+      {
+        "useCaseName": "Upload Prescription",
+        "complexity": "S",
+        "weight": 3,
+        "effortEstimateHours": 24,
+        "riskLevel": "Low",
+        "classification": "UI + Logic",
+        "effortType": "Low",
+        "personDays": 3
+      },
+      {
+        "useCaseName": "Book Lab Test",
+        "complexity": "M",
+        "weight": 7,
+        "effortEstimateHours": 56,
+        "riskLevel": "Medium",
+        "classification": "UI + Logic",
+        "effortType": "Medium",
+        "personDays": 7
+      },
+      {
+        "useCaseName": "Upload Lab Report",
+        "complexity": "S",
+        "weight": 4,
+        "effortEstimateHours": 32,
+        "riskLevel": "Low",
+        "classification": "UI + Logic",
+        "effortType": "Low",
+        "personDays": 4
+      },
+      {
+        "useCaseName": "Manage Pharmacy Orders",
+        "complexity": "M",
+        "weight": 9,
+        "effortEstimateHours": 72,
+        "riskLevel": "Medium",
+        "classification": "UI + Logic",
+        "effortType": "Medium",
+        "personDays": 9
+      },
+      {
+        "useCaseName": "Manage Payments",
+        "complexity": "M",
+        "weight": 12,
+        "effortEstimateHours": 96,
+        "riskLevel": "Medium",
+        "classification": "UI + Logic",
+        "effortType": "Medium",
+        "personDays": 12
+      },
+      {
+        "useCaseName": "Submit Feedback",
+        "complexity": "S",
+        "weight": 2,
+        "effortEstimateHours": 16,
+        "riskLevel": "Low",
+        "classification": "UI + Logic",
+        "effortType": "Low",
+        "personDays": 2
+      },
+      {
+        "useCaseName": "Admin Dashboard",
+        "complexity": "L",
+        "weight": 18,
+        "effortEstimateHours": 144,
+        "riskLevel": "High",
+        "classification": "UI + Logic",
+        "effortType": "High",
+        "personDays": 18
+      },
+      {
+        "useCaseName": "User Notifications",
+        "complexity": "M",
+        "weight": 11,
+        "effortEstimateHours": 88,
+        "riskLevel": "Medium",
+        "classification": "UI + Logic",
+        "effortType": "Medium",
+        "personDays": 11
+      }
+    ]
+  },
+  "costEstimation": {
+    "technique": "Cost Estimation",
+    "rows": [
+      {
+        "role": "Frontend Developer",
+        "numberOfPersons": 2,
+        "costPerPersonPerMonth": 50000,
+        "totalCostPerMonth": 100000
+      },
+      {
+        "role": "Backend Developer",
+        "numberOfPersons": 2,
+        "costPerPersonPerMonth": 50000,
+        "totalCostPerMonth": 100000
+      },
+      {
+        "role": "UI/UX Designer",
+        "numberOfPersons": 1,
+        "costPerPersonPerMonth": 40000,
+        "totalCostPerMonth": 40000
+      },
+      {
+        "role": "QA Engineer",
+        "numberOfPersons": 1,
+        "costPerPersonPerMonth": 40000,
+        "totalCostPerMonth": 40000
+      },
+      {
+        "role": "Project Manager",
+        "numberOfPersons": 1,
+        "costPerPersonPerMonth": 60000,
+        "totalCostPerMonth": 60000
+      }
+    ]
+  }
+}
