@@ -79,7 +79,7 @@ document_content = extract_text_from_pdf(document_upload_path)
 rate_card_upload_path = input("Enter the path for Rate Card Upload (Excel/PDF file): ")
 rate_card_content = extract_text_from_pdf(rate_card_upload_path)
 
-project_budget = get_numeric_input("Enter Project Budget in Dollars: ", float)
+project_budget = get_numeric_input("Enter Project Budget in Rupees: ", float)
 
 # Prepare input payload for document processing
 input_payload = {

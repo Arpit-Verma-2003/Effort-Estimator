@@ -12,8 +12,6 @@ load_dotenv()
 # Step 0: Load input payload
 with open("input_payload.json", "r") as f:
     input_data = json.load(f)
-with open("../output_schemas/cost_estimation.schema.json", "r") as f:
-    cost_estimation_schema = f.read()
 # Extract project metadata
 estimation_technique = input_data.get("estimation_technique", "").lower()
 project_metadata = {
@@ -91,7 +89,6 @@ if total_chunks > 20:
     )
     summarized_context = summary_response.text.strip()
     context = summarized_context
-    print(f"📄Summarized context: {summarized_context}")
 else:
     results = collection.query(
         query_embeddings=[query_embedding],
@@ -129,22 +126,10 @@ Input JSON Schema:
 {input_schema_json}
 
 Expected Output JSON Format:
-Below are two JSON Schemas defining the expected structure.
-Use them as guidance only — your task is to produce real JSON data matching these structures.
-1. Use Case Estimation Output Schema:
+Only provide valid JSON matching the below output schema.
 {output_schema_json}
 
-2. Cost Estimation Output Schema:
-Consider the project budget while planning the cost estimation (it is present in the project metadata). Make sure you do not exceed the total budget. The cost estimation should be in INR.
-{cost_estimation_schema}
-Only and only provide produced JSON output. Do not provide any other text.
-Expected Combined Output Format:
-```json
-{{
-  "useCaseEstimation": {{ ... }},
-  "costEstimation": {{ ... }}
-}}
-Only and only provide valid JSON data conforming to the above combined format.
+Only and only provide valid JSON output. Do not add any explanations or extra text.
 """
 
 # ✅ Count total input tokens BEFORE sending to LLM
@@ -180,13 +165,4 @@ except json.JSONDecodeError:
     with open(output_path, "w") as f:
         f.write(clean_text)
 
-print(f"\n✅ Output written to {output_path}")
-
-# Delete input_payload.json
-# input_payload_path = "input_payload.json"
-# if os.path.exists(input_payload_path):
-#     try:
-#         os.remove(input_payload_path)
-#         print(f"\n🗑️ Deleted input file: {input_payload_path}")
-#     except Exception as e:
-#         print(f"\n⚠️ Failed to delete {input_payload_path}: {e}")
+print(f"\n✅ Step 1: Estimation Table written to {output_path}")
