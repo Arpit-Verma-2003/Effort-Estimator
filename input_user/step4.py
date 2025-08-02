@@ -1,43 +1,51 @@
-import json
-import google.generativeai as genai
-import re
 import os
-# Read use case output
-with open("output.json", "r") as f:
-    use_case_data = json.load(f)
+import json
+import re
+from typing import Dict
+import google.generativeai as genai
+from dotenv import load_dotenv
 
-with open("input_payload.json", "r") as f:
-    input_data = json.load(f)
+load_dotenv()
 
-with open("../output_schemas/cost_estimation.schema.json", "r") as f:
-    cost_estimation_schema = f.read()
+# Configure Gemini
+genai_api_key = os.getenv("GEMINI_API_KEY")
+genai.configure(api_key=genai_api_key)
 
-estimation_technique = input_data.get("estimation_technique", "").lower()
-metadata_info = {
-    "Estimation Technique": estimation_technique,
-    "Project Type": input_data.get("project_type"),
-    "Time Constraint (months)": input_data.get("time_constraint"),
-    "Project Scale": input_data.get("project_scale"),
-    "Project Budget": input_data.get("project_budget")
-}
+def run(data: Dict) -> Dict:
+    """
+    Step 4: Generate a cost estimation plan using use-case data + metadata.
+    Adds 'cost_estimation_output' to the data dict.
+    """
+    # Extract metadata
+    estimation_technique = data.get("estimation_technique", "").lower()
+    metadata_info = {
+        "Estimation Technique": estimation_technique,
+        "Project Type": data.get("project_type"),
+        "Time Constraint (months)": data.get("time_constraint"),
+        "Project Scale": data.get("project_scale"),
+        "Project Budget": data.get("project_budget")
+    }
 
-# Optional: pass use case rows directly
-use_case_rows = use_case_data.get("rows", [])
+    use_case_rows = data.get("estimation_output", {}).get("rows", [])
+    use_case_rows_str = json.dumps(use_case_rows, indent=2)
 
-# Format rows as JSON string
-use_case_rows_str = json.dumps(use_case_rows, indent=2)
+    # Load schema
+    schema_path = os.path.join("output_schemas", "cost_estimation.schema.json")
+    with open(schema_path, "r") as f:
+        cost_schema = f.read()
 
-cost_prompt = f"""
+    # Prepare prompt
+    cost_prompt = f"""
 You are a helpful cost planning assistant. Based on the **project metadata** and the **use case estimation table**, generate a cost estimation plan that fits within the project budget. Output valid JSON data matching the schema provided.
 
 Project Metadata:
-{metadata_info}
+{json.dumps(metadata_info, indent=2)}
 
 Use Case Estimation Table:
 {use_case_rows_str}
 
 Cost Estimation Output Schema:
-{cost_estimation_schema}
+{cost_schema}
 
 Note:
 - Do not exceed the budget mentioned in metadata.
@@ -45,39 +53,23 @@ Note:
 - Output should conform strictly to the schema.
 
 Only provide valid JSON data for the costEstimation output. Do not add any explanations or extra text.
-"""
-# ✅ Count total input tokens BEFORE sending to LLM
-model = genai.GenerativeModel("gemini-1.5-flash")
-input_token_count = model.count_tokens(cost_prompt).total_tokens
-print(f"📏 Total input tokens going to Gemini: {input_token_count}")
+""".strip()
 
-# Generate costEstimation
-model = genai.GenerativeModel("gemini-1.5-flash")
-cost_response = model.generate_content(
-    cost_prompt,
-    generation_config={
-        "max_output_tokens": 2000,
-        "temperature": 0.0,
-        "top_p": 1.0
-    }
-)
+    # Call Gemini model
+    model = genai.GenerativeModel("gemini-1.5-flash")
+    response = model.generate_content(
+        cost_prompt,
+        generation_config={"max_output_tokens": 2000, "temperature": 0.0}
+    )
 
-# Clean and parse
-raw_cost_text = cost_response.text.strip()
-clean_cost_text = re.sub(r"^```(?:json)?\s*|```$", "", raw_cost_text.strip(), flags=re.MULTILINE)
-cost_data = json.loads(clean_cost_text)
+    # Parse response
+    raw = response.text.strip()
+    clean = re.sub(r"^```(?:json)?\s*|```$", "", raw.strip(), flags=re.MULTILINE)
 
-# Save costEstimation output
-with open("cost_output.json", "w") as f:
-    json.dump(cost_data, f, indent=2)
-
-print("✅ Step 2: Cost estimation written to cost_output.json")
-
-# Delete input_payload.json
-input_payload_path = "input_payload.json"
-if os.path.exists(input_payload_path):
     try:
-        os.remove(input_payload_path)
-        print(f"\n🗑️ Deleted input file: {input_payload_path}")
-    except Exception as e:
-        print(f"\n⚠️ Failed to delete {input_payload_path}: {e}")
+        cost_data = json.loads(clean)
+        data["cost_estimation_output"] = cost_data
+    except json.JSONDecodeError:
+        data["cost_estimation_output"] = clean  # fallback
+
+    return data
