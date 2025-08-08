@@ -34,10 +34,12 @@ def run(data: Dict) -> Dict:
     """
 
     # Prepare summaries
-    estimation_rows = data.get("estimation_output", {}).get("rows", [])
+    estimation_output = data.get("estimation_table", {}).get("estimation_output", {})
+    
+    estimation_rows = estimation_output.get("rows", [])
     cost_rows = data.get("cost_estimation_output", {}).get("rows", [])
 
-    estimation_title = data.get("estimation_output", {}).get("technique", "Estimation Table")
+    estimation_title = estimation_output.get("technique", "Estimation Table")
     estimation_summary = generate_table_summary(estimation_title, estimation_rows)
     cost_summary = generate_table_summary("Cost Estimation Table", cost_rows)
 
