@@ -1,0 +1,41 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "COCOMOEstimationOutput",
+  "description": "Generate actual JSON data conforming to this schema, not the schema itself. The output must include real use case estimation values in the 'rows' array.",
+  "type": "object",
+  "properties": {
+    "technique": {
+      "type": "string",
+      "enum": ["COCOMO"]
+    },
+    "rows": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "moduleName": { "type": "string" },
+          "complexity": { "type": "string", "enum": ["S", "M", "L"] },
+          "kLoc": { "type": "number", "minimum": 0 },
+          "effortEstimatePM": { "type": "number", "minimum": 0 },
+          "riskLevel": { "type": "string", "enum": ["Low", "Medium", "High"] },
+          "classification": { "type": "string" },
+          "effortType": { "type": "string", "enum": ["Low", "Medium", "High"] },
+          "personDays": { "type": "number", "minimum": 0 }
+        },
+        "required": [
+          "moduleName",
+          "complexity",
+          "kLoc",
+          "effortEstimatePM",
+          "riskLevel",
+          "classification",
+          "effortType",
+          "personDays"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": ["technique", "rows"],
+  "additionalProperties": false
+}

@@ -1,0 +1,57 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "FunctionPointEstimationOutput",
+  "description": "Generate actual JSON data conforming to this schema, not the schema itself. The output must include real use case estimation values in the 'rows' array.",
+  "type": "object",
+  "properties": {
+    "technique": {
+      "type": "string",
+      "enum": ["Function Point Estimation"]
+    },
+    "rows": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "epic": { "type": "string" },
+          "function": { "type": "string" },
+          "functionType": {
+            "type": "string",
+            "enum": ["EI", "EO", "EQ", "ILF", "EIF"]
+          },
+          "complexity": {
+            "type": "string",
+            "enum": ["Low", "Average", "High"]
+          },
+          "unadjustedFunctionPoints": { "type": "number", "minimum": 0 },
+          "adjustedFunctionPoints": { "type": "number", "minimum": 0 },
+          "classification": { "type": "string" },
+          "riskLevel": {
+            "type": "string",
+            "enum": ["Low", "Medium", "High"]
+          },
+          "effortType": {
+            "type": "string",
+            "enum": ["Low", "Medium", "High"]
+          },
+          "effortEstimatePersonDays": { "type": "number", "minimum": 0 }
+        },
+        "required": [
+          "epic",
+          "function",
+          "functionType",
+          "complexity",
+          "unadjustedFunctionPoints",
+          "adjustedFunctionPoints",
+          "classification",
+          "riskLevel",
+          "effortType",
+          "effortEstimatePersonDays"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": ["technique", "rows"],
+  "additionalProperties": false
+}

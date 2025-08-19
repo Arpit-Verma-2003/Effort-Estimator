@@ -1,0 +1,56 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "CostEstimationOutput",
+  "description": "Generate actual JSON data conforming to this schema. The output must include real monthly cost estimation per role in the 'rows' array.",
+  "type": "object",
+  "properties": {
+    "technique": {
+      "type": "string",
+      "enum": ["Cost Estimation"]
+    },
+    "rows": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "role": {
+            "type": "string",
+            "description": "Role in the project team (e.g., Frontend Developer, Backend Developer, etc.)",
+            "examples": [
+              "Frontend Developer",
+              "Backend Developer",
+              "UI/UX Designer",
+              "QA Engineer",
+              "DevOps Engineer",
+              "Project Manager"
+            ]
+          },
+          "numberOfPersons": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Number of people assigned to the role"
+          },
+          "costPerPersonPerMonth": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Cost in INR per person per month"
+          },
+          "totalCostPerMonth": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Calculated as numberOfPersons × costPerPersonPerMonth"
+          }
+        },
+        "required": [
+          "role",
+          "numberOfPersons",
+          "costPerPersonPerMonth",
+          "totalCostPerMonth"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": ["technique", "rows"],
+  "additionalProperties": false
+}

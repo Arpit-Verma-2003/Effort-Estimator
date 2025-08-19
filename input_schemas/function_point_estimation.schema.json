@@ -1,0 +1,192 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "FunctionPointEstimationInput",
+  "description": "Schema to guide effort estimation using the Function Point Analysis (FPA) technique. Captures project context, defines output table structure, and includes mappings for calculating function points, adjusted effort, and risk.",
+  "type": "object",
+  "properties": {
+    "estimationTechnique": {
+      "type": "string",
+      "const": "Function Point Estimation",
+      "description": "Specifies the estimation method."
+    },
+
+    "projectType": {
+      "type": "string",
+      "description": "Describes the type of project. E.g., ERP System, SaaS Platform, Integration Hub, E-Commerce",
+      "examples": ["ERP System", "SaaS Platform", "Integration Hub", "E-Commerce"]
+    },
+
+    "projectScale": {
+      "type": "string",
+      "enum": ["Small", "Medium", "Large", "Mega"],
+      "description": "Project size. Influences function point totals and number of epics."
+    },
+
+    "timeConstraint": {
+      "type": "string",
+      "description": "Expected deadline or delivery window.",
+      "examples": ["1 month", "3 months", "36 months"]
+    },
+
+    "estimatedModules": {
+      "type": "integer",
+      "description": "Number of modules (epics) to be generated. Mapped from project scale.",
+      "enum": [3, 5, 8, 12]
+    },
+
+    "effortRangeHours": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 2,
+      "items": { "type": "integer" },
+      "description": "Minimum and maximum total effort across all modules in hours."
+    },
+
+    "columnDefinitions": {
+      "type": "array",
+      "description": "Defines the structure of each row in the output table.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "columnName": { "type": "string" },
+          "dataType": { "type": "string" },
+          "allowedValues": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "description": { "type": "string" }
+        },
+        "required": ["columnName", "dataType"]
+      },
+      "default": [
+        {
+          "columnName": "Epic (Modules)",
+          "dataType": "string",
+          "description": "High-level functional area or module."
+        },
+        {
+          "columnName": "Function",
+          "dataType": "string",
+          "description": "Specific function or feature within the module."
+        },
+        {
+          "columnName": "Type of Function Point",
+          "dataType": "string",
+          "allowedValues": ["EI", "EO", "EQ", "ILF", "EIF"],
+          "description": "Function point type: EI = External Input, EO = External Output, EQ = External Query, ILF = Internal Logical File, EIF = External Interface File."
+        },
+        {
+          "columnName": "Complexity",
+          "dataType": "string",
+          "allowedValues": ["Low", "Medium", "High"],
+          "description": "Assigned based on rules considering number of files referenced, data elements, and function type."
+        },
+        {
+          "columnName": "Unadjusted Function Points",
+          "dataType": "integer",
+          "description": "Raw FP value assigned before adjustments based on complexity and type."
+        },
+        {
+          "columnName": "Adjusted Function Points",
+          "dataType": "number",
+          "description": "Adjusted FP value after applying complexity adjustment factor (CAF)."
+        },
+        {
+          "columnName": "Classification",
+          "dataType": "string",
+          "description": "Functional nature of the task. E.g., 'Data Entry', 'Report Generator', 'File Interface'."
+        },
+        {
+          "columnName": "Risk Level",
+          "dataType": "string",
+          "allowedValues": ["Low", "Medium", "High"],
+          "description": "Mapped from complexity and classification."
+        },
+        {
+          "columnName": "Effort Type",
+          "dataType": "string",
+          "allowedValues": ["Low", "Medium", "High"],
+          "description": "Mapped from adjusted FP and classification."
+        },
+        {
+          "columnName": "Effort Estimate (Person-Days)",
+          "dataType": "number",
+          "description": "Total estimated effort in person-days. Typically 1 function point = 0.5 to 1 person-day depending on complexity."
+        }
+      ]
+    },
+
+    "mappingsAndRules": {
+      "type": "object",
+      "description": "Defines logic for function point weight mapping, adjustment, and effort/risk derivation.",
+      "properties": {
+        "scaleToEpicCount": {
+        "description": "Maps project scale to a fixed number of epics. The LLM should generate only this number of epics for a given scale. If the natural number of epics exceeds this count, similar ones must be merged or combined to meet the target.",
+        "properties": {
+          "Small": { "type": "integer", "const": 5 },
+          "Medium": { "type": "integer", "const": 8 },
+          "Large": { "type": "integer", "const": 12 },
+          "Mega": { "type": "integer", "const": 15 }
+          }
+        },
+
+        "scaleToFunctionPointRange": {
+          "description": "Defines the permissible range for function point estimates based on the project scale. LLM must ensure the function point falls within this range.",
+          "Small": [20, 50],
+          "Medium": [50, 120],
+          "Large": [120, 200],
+          "Mega": [200, 350]
+        },
+
+        "functionPointWeights": {
+          "EI": { "Low": 3, "Medium": 4, "High": 6 },
+          "EO": { "Low": 4, "Medium": 5, "High": 7 },
+          "EQ": { "Low": 3, "Medium": 4, "High": 6 },
+          "ILF": { "Low": 7, "Medium": 10, "High": 15 },
+          "EIF": { "Low": 5, "Medium": 7, "High": 10 }
+        },
+
+        "adjustmentFormula": {
+          "type": "string",
+          "const": "Adjusted FP = Unadjusted FP × CAF, where CAF = (GSC total × 0.01) + 0.65"
+        },
+
+        "CAFRange": {
+          "minGSC": 14,
+          "maxGSC": 35,
+          "CAFMin": 0.79,
+          "CAFMax": 1.0
+        },
+
+        "riskMappingRules": [
+          "Low if adjusted FP < 10 and classification is 'Data Entry'",
+          "Medium if adjusted FP between 10–30 or classification is 'Report Generator'",
+          "High if adjusted FP > 30 or classification is 'File Interface'"
+        ],
+
+        "effortTypeMappingRules": [
+          "Low if adjusted FP < 10",
+          "Medium if adjusted FP between 10–30",
+          "High if adjusted FP > 30"
+        ],
+
+        "effortEstimateFormula": {
+          "type": "string",
+          "const": "Effort Estimate (Person-Days) = Adjusted FP × 0.8"
+        },
+
+        "functionNamingRule": {
+          "type": "string",
+          "const": "Use present-tense verb + noun format like 'Submit Invoice', 'Generate Report', 'Fetch Customer Data'"
+        }
+      }
+    }
+  },
+
+  "required": [
+    "estimationTechnique",
+    "projectType",
+    "projectScale",
+    "timeConstraint"
+  ]
+}

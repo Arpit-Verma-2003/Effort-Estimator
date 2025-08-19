@@ -1,0 +1,43 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "TShirtSizeEstimationOutput",
+  "description": "Generate actual JSON data conforming to this schema, not the schema itself. The output must include real use case estimation values in the 'rows' array.",
+  "type": "object",
+  "properties": {
+    "technique": {
+      "type": "string",
+      "enum": ["T-Shirt Size Estimation"]
+    },
+    "rows": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "epic": { "type": "string" },
+          "userStory": { "type": "string" },
+          "complexity": { "type": "string", "enum": ["L", "M", "H"] },
+          "tshirtSize": { "type": "string", "enum": ["XS", "S", "M", "L", "XL", "XXL"] },
+          "classification": { "type": "string" },
+          "effortEstimateHours": { "type": "number", "minimum": 0 },
+          "riskLevel": { "type": "string", "enum": ["Low", "Medium", "High"] },
+          "effortType": { "type": "string", "enum": ["Low", "Medium", "High"] },
+          "personDays": { "type": "number", "minimum": 0 }
+        },
+        "required": [
+          "epic",
+          "userStory",
+          "complexity",
+          "tshirtSize",
+          "classification",
+          "effortEstimateHours",
+          "riskLevel",
+          "effortType",
+          "personDays"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": ["technique", "rows"],
+  "additionalProperties": false
+}
