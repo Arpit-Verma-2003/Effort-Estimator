@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import HomePage from './pages/HomePage'
 const App = () => {
   const [file,setFile] = useState(null)
   const [result, setResult] = useState(null) 
@@ -56,6 +57,7 @@ const App = () => {
           {JSON.stringify(result, null, 2)}
         </pre>
       )}
+      <HomePage/>
     </>
   )
 }

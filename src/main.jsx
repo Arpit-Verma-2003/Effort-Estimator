@@ -3,9 +3,10 @@ import { createRoot } from 'react-dom/client'
 import './index.css'
 import React from 'react'
 import App from './App.jsx'
+import { AppRoutes } from './AppRoutes.jsx'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <App />
+    <AppRoutes/>
   </StrictMode>,
 )
