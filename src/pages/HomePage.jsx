@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import Header from "../components/Header";
 
 const HomePage = () => {
   const [file, setFile] = useState(null);
@@ -10,20 +11,9 @@ const HomePage = () => {
   return (
     <div className="min-h-screen bg-blue-900 text-white">
       {/* Header */}
-      <header className="flex items-center justify-between px-10 py-6 bg-blue-950 shadow-lg">
-        <h1 className="text-2xl font-bold">Effort Estimator</h1>
-        <nav>
-          <ul className="flex space-x-8 text-white text-lg font-medium">
-            <li className="cursor-pointer hover:text-gray-300">Home</li>
-            <li className="cursor-pointer hover:text-gray-300">About</li>
-            <li className="cursor-pointer hover:text-gray-300">Products</li>
-            <li className="cursor-pointer hover:text-gray-300">Contact</li>
-          </ul>
-        </nav>
-      </header>
-
+      <Header/>
       {/* Hero Section */}
-      <section className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center px-10 py-16">
+      <section className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center pl-10 py-16 mt-20">
         {/* Left Side */}
         <div className="ml-20 mt-10">
           <p className="text-sm uppercase tracking-widest mb-4 text-gray-300">
@@ -39,7 +29,7 @@ const HomePage = () => {
           </p>
 
           {/* Upload Section */}
-          <div className="relative bg-blue-700 border-2 border-dashed border-white/70 rounded-xl p-10 text-center mt-12 shadow-lg">
+          <div className="relative bg-blue-700 border-2 border-dashed border-white/70 rounded-xl p-10 text-center mt-12 shadow-lg mr-9">
             {/* Privacy Badge */}
             <div className="absolute top-3 right-3 bg-white/10 text-white text-xs font-semibold px-3 py-1 rounded-full border border-white/30">
               🔒 100% privacy
@@ -100,11 +90,11 @@ const HomePage = () => {
         </div>
 
         {/* Right Side (Image) */}
-        <div className="flex justify-center items-center">
+        <div className="absolute flex justify-end overflow-visible right-0">
           <img
-            src="/laptop.png" // place your image in public folder as laptop.png
+            src="/laptop.png"
             alt="Laptop Preview"
-            className="w-[90%] rounded-lg shadow-2xl"
+            className="w-[60vw] md:w-[72vw] object-cover translate-x-[30%]"
           />
         </div>
       </section>
