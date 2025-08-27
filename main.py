@@ -12,10 +12,9 @@ app = FastAPI(
 origins = [
     "http://localhost:5173"
 ]
-# Optional: Add CORS if frontend will run on different port (e.g., React on localhost:3000)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,  # For dev use only; in prod, restrict to your frontend domain
+    allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
