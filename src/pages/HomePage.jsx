@@ -1,12 +1,37 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import Header from "../components/Header";
 
 const HomePage = () => {
   const [file, setFile] = useState(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const inputFileRef = useRef(null);
 
   const handleFileUpload = (e) => {
     setFile(e.target.files[0]);
   };
+
+  const onDraggingHandler = (e) => {
+    e.preventDefault();
+    setIsDragging(true);
+  }
+
+  const onLeaveHandler = (e) => {
+    e.preventDefault();
+    setIsDragging(false);
+  };
+
+  const onDropHandler = (e) => {
+    e.preventDefault();
+    setIsDragging(false);
+    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+      setFile(e.dataTransfer.files[0]);
+      e.dataTransfer.clearData();
+    }
+  }
+
+  const handleContainerClick = () => {
+    inputFileRef.current.click();
+  }
 
   return (
     <div className="min-h-screen bg-blue-900 text-white">
@@ -29,7 +54,10 @@ const HomePage = () => {
           </p>
 
           {/* Upload Section */}
-          <div className="relative bg-blue-700 border-2 border-dashed border-white/70 rounded-xl p-10 text-center mt-12 shadow-lg mr-9">
+          <div onDrop={onDropHandler} onDragOver={(e) => e.preventDefault()} onDragEnter={onDraggingHandler} onDragLeave={onLeaveHandler} onClick={handleContainerClick}
+            className={`relative cursor-pointer border-2 border-dashed rounded-xl p-10 text-center mt-12 shadow-lg mr-9 transition 
+            ${isDragging ? "border-yellow-400 bg-blue-600" : "border-white/70 bg-blue-700"}`}
+          >
             {/* Privacy Badge */}
             <div className="absolute top-3 right-3 bg-white/10 text-white text-xs font-semibold px-3 py-1 rounded-full border border-white/30">
               🔒 100% privacy
@@ -68,12 +96,12 @@ const HomePage = () => {
 
             {/* Subtext */}
             <p className="text-sm text-gray-200">
-              Supported: BRD, RFQ (PDF/DOCX). Max 2MB.
+              Supported: BRD, RFQ (PDF/DOCX). Max 200MB.
             </p>
 
             {/* Hidden Input */}
             <input
-              id="file-upload"
+              ref={inputFileRef}
               type="file"
               onChange={handleFileUpload}
               className="hidden"
