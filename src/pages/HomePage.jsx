@@ -55,7 +55,7 @@ const HomePage = () => {
 
           {/* Upload Section */}
           <div onDrop={onDropHandler} onDragOver={(e) => e.preventDefault()} onDragEnter={onDraggingHandler} onDragLeave={onLeaveHandler} onClick={handleContainerClick}
-            className={`relative cursor-pointer border-2 border-dashed rounded-xl p-10 text-center mt-12 shadow-lg mr-9 transition 
+            className={`relative cursor-pointer z-30 border-2 border-dashed rounded-xl p-10 text-center mt-12 shadow-lg mr-9 transition 
             ${isDragging ? "border-yellow-400 bg-blue-600" : "border-white/70 bg-blue-700"}`}
           >
             {/* Privacy Badge */}
