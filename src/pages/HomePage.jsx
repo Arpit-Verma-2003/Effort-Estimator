@@ -5,10 +5,26 @@ const HomePage = () => {
   const [file, setFile] = useState(null);
   const [isDragging, setIsDragging] = useState(false);
   const inputFileRef = useRef(null);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const handleFileUpload = (e) => {
+    if(!validateFileType(e.target.files[0])){
+      setErrorMessage("Uploaded file type isn't supported");
+      setFile(null)
+      return;
+    }
+    setErrorMessage("");
     setFile(e.target.files[0]);
   };
+
+  const validateFileType = (file) => {
+    const fileTypes = [
+      "application/pdf",
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      "application/msword"
+    ]
+    return fileTypes.includes(file.type);
+  }
 
   const onDraggingHandler = (e) => {
     e.preventDefault();
@@ -23,6 +39,12 @@ const HomePage = () => {
   const onDropHandler = (e) => {
     e.preventDefault();
     setIsDragging(false);
+    if(!validateFileType(e.target.files[0])){
+      setErrorMessage("Uploaded file type isn't supported");
+      setFile(null)
+      return;
+    }
+    setErrorMessage("");
     if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
       setFile(e.dataTransfer.files[0]);
       e.dataTransfer.clearData();
@@ -98,11 +120,12 @@ const HomePage = () => {
             <p className="text-sm text-gray-200">
               Supported: BRD, RFQ (PDF/DOCX). Max 200MB.
             </p>
-
+            {errorMessage && <p className="mt-4 bg-red-500/20 text-red-300 text-sm px-4 py-2 rounded-lg animate-fadeIn">{errorMessage}</p>}
             {/* Hidden Input */}
             <input
               ref={inputFileRef}
               type="file"
+              accept=".pdf, .doc, .docx"
               onChange={handleFileUpload}
               className="hidden"
             />
