@@ -2,6 +2,7 @@ import React, { useState, useRef } from "react";
 import Header from "../components/Header";
 import { X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import axios from "axios";
 
 const HomePage = () => {
   const [file, setFile] = useState(null);
@@ -9,6 +10,54 @@ const HomePage = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [showForm, setShowForm] = useState(false);
   const inputFileRef = useRef(null);
+  const [formData, setFormData] = useState({
+    estimation_technique: "",
+    project_type: "",
+    project_scale: "",
+    time_constraint: "",
+    project_budget: "",
+  });
+  const [isSubmitting,setIsSubmitting] = useState(false);
+
+  const handleInputChange = (e) => {
+    const {name, value} = e.target;
+    setFormData((prev) => ({...prev, [name] : value}));
+  }
+
+  const convertFileToBase64 = (file) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result.split(",")[1]); // remove "data:...base64,"
+      reader.onerror = (error) => reject(error);
+    });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if(!file){
+      alert("File isn't available");
+      return;
+    }
+
+    try{
+      setIsSubmitting(true);
+      const base64File = await convertFileToBase64(file);
+      const payload = {
+        ...formData,
+        document_file: base64File,
+        rate_card_file : "", //empty for now 
+      }
+      const result = await axios.post(`${import.meta.env.VITE_BASE_URL}/estimate`,payload);
+      console.log(result);
+      alert("Result in console ready");
+    }catch(error){
+      console.error(error);
+      alert("error");
+    }finally{
+      setIsSubmitting(false);
+    }
+  };
 
   // -------------------- File Handlers --------------------
   const handleFileUpload = (e) => {
@@ -79,10 +128,12 @@ const HomePage = () => {
   };
 
   const handleProceed = () => setShowForm(true);
+
   const handleCancel = () => {
     setFile(null);
     setErrorMessage("");
   };
+  
   const handleContainerClick = () => {
     if (!file) inputFileRef.current.click();
   };
@@ -248,12 +299,17 @@ const HomePage = () => {
               Provide Project Details
             </h2>
 
-            <form className="bg-blue-800 p-10 rounded-2xl shadow-xl w-full max-w-lg space-y-6">
+            <form className="bg-blue-800 p-10 rounded-2xl shadow-xl w-full max-w-lg space-y-6"
+            onSubmit={handleSubmit}
+            >
               <div>
                 <label className="block text-sm font-semibold mb-2">
                   Estimation Technique
                 </label>
                 <select
+                  name="estimation_technique"
+                  value={formData.estimation_technique}
+                  onChange={handleInputChange}
                   className="w-full p-3 rounded-lg text-black focus:outline-none"
                   required
                 >
@@ -271,6 +327,9 @@ const HomePage = () => {
                 </label>
                 <input
                   type="text"
+                  name="project_type"
+                  value={formData.project_type}
+                  onChange={handleInputChange}
                   placeholder="e.g. Web App"
                   className="w-full p-3 rounded-lg text-black focus:outline-none"
                   required
@@ -286,8 +345,10 @@ const HomePage = () => {
                     <label key={scale} className="flex items-center gap-2">
                       <input
                         type="radio"
-                        name="scale"
+                        name="project_scale"
                         value={scale}
+                        checked={formData.project_scale === scale}
+                        onChange={handleInputChange}
                         className="accent-yellow-400"
                         required
                       />
@@ -303,6 +364,9 @@ const HomePage = () => {
                 </label>
                 <input
                   type="number"
+                  name="time_constraint"
+                  value={formData.time_constraint}
+                  onChange={handleInputChange}
                   min="1"
                   placeholder="e.g. 3"
                   className="w-full p-3 rounded-lg text-black focus:outline-none"
@@ -317,6 +381,9 @@ const HomePage = () => {
                 <input
                   type="number"
                   min="0"
+                  name="project_budget"
+                  value={formData.project_budget}
+                  onChange={handleInputChange}
                   placeholder="e.g. 50000"
                   className="w-full p-3 rounded-lg text-black focus:outline-none"
                   required
@@ -325,7 +392,10 @@ const HomePage = () => {
 
               <button
                 type="submit"
-                className="w-full bg-yellow-400 text-black font-bold py-3 rounded-lg hover:bg-yellow-300 transition cursor-pointer"
+                disabled = {isSubmitting}
+                className={`w-full bg-yellow-400 text-black font-bold py-3 rounded-lg hover:bg-yellow-300 transition cursor-pointer${
+                  isSubmitting ? "opacity-50 cursor-not-allowed" : "hover:bg-yellow-300"
+                }`}
               >
                 Generate Estimation
               </button>
