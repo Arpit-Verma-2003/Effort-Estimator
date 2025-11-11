@@ -6,6 +6,7 @@ import pandas as pd
 from typing import Dict, Tuple
 
 def generate_table_summary(title: str, rows: list) -> str:
+    print("entered step 5 to create table")
     """
     Creates a string summary of a table (with totals) using pandas.
     """
@@ -24,9 +25,12 @@ def generate_table_summary(title: str, rows: list) -> str:
     output = f"\n📊 {title}:\n"
     output += df.to_string(index=False)
     output += "\n" + "-" * 60 + "\n"
+    print(output)
+    print("step 5 in progress, generated above output")
     return output
 
 def run(data: Dict) -> Dict:
+    print("step 5 initiate")
     """
     Step 5: Finalizes processing, deletes temp folders,
     generates readable table summaries for console/log,
@@ -44,13 +48,13 @@ def run(data: Dict) -> Dict:
     cost_summary = generate_table_summary("Cost Estimation Table", cost_rows)
 
     # Delete per-request ChromaDB folder
-    session_path = data.get("chroma_session_path")
-    if session_path and os.path.exists(session_path):
-        try:
-            shutil.rmtree(session_path)
-            print(f"🧹 Deleted ChromaDB folder: {session_path}")
-        except Exception as e:
-            print(f"⚠️ Could not delete {session_path}: {e}")
+    # session_path = data.get("chroma_session_path")
+    # if session_path and os.path.exists(session_path):
+    #     try:
+    #         shutil.rmtree(session_path)
+    #         print(f"🧹 Deleted ChromaDB folder: {session_path}")
+    #     except Exception as e:
+    #         print(f"⚠️ Could not delete {session_path}: {e}")
 
     # Optional cleanup: input/output files (in local-only mode)
 
@@ -59,5 +63,6 @@ def run(data: Dict) -> Dict:
         "estimation_table": estimation_summary,
         "cost_estimation_table": cost_summary
     }
-
+    print(data)
+    print("step 5 end, generated above data")
     return data

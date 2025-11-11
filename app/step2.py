@@ -2,14 +2,18 @@ import os
 import uuid
 from typing import Dict
 import chromadb
-import google.generativeai as genai
+# import google.generativeai as genai
+from sentence_transformers import SentenceTransformer
 from dotenv import load_dotenv
 
 load_dotenv()
 
 # Configure Gemini
-genai_api_key = os.getenv("GEMINI_API_KEY")
-genai.configure(api_key=genai_api_key)
+# genai_api_key = os.getenv("GEMINI_API_KEY")
+# genai.configure(api_key=genai_api_key)
+# Load Hugging Face Sentence Transformer model
+model = SentenceTransformer("all-MiniLM-L6-v2")
+
 
 def chunk_text(text: str, chunk_size=500, overlap=100):
     words = text.split()
@@ -45,11 +49,12 @@ def run(data: Dict) -> Dict:
 
     for idx, chunk in enumerate(chunks):
         try:
-            response = genai.embed_content(
-                model="models/embedding-001",
-                content=chunk
-            )
-            embedding = response["embedding"]
+            # response = genai.embed_content(
+            #     model="models/embedding-001",
+            #     content=chunk
+            # )
+            embedding = model.encode(chunk).tolist()
+
             collection.add(
                 ids=[f"doc_chunk_{idx}"],
                 embeddings=[embedding],

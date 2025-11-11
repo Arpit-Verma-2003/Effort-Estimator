@@ -4,6 +4,7 @@ import re
 from typing import Dict
 import chromadb
 import google.generativeai as genai
+from sentence_transformers import SentenceTransformer
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -11,13 +12,12 @@ load_dotenv()
 # Configure Gemini API
 genai_api_key = os.getenv("GEMINI_API_KEY")
 genai.configure(api_key=genai_api_key)
+embedding_model = SentenceTransformer("all-MiniLM-L6-v2")
 
 # Step 1: Chunk retrieval logic
 def get_relevant_chunks(query: str, collection, max_chunks=12):
-    query_embedding = genai.embed_content(
-        model="models/embedding-001",
-        content=query
-    )["embedding"]
+    print("Entered Step 3 will do embedding")
+    query_embedding = embedding_model.encode(query).tolist()
 
     total_chunks = collection.count()
     retrieved_texts = []
@@ -35,7 +35,7 @@ def get_relevant_chunks(query: str, collection, max_chunks=12):
         {long_context}
         Output: Concise but detailed summary for effort estimation.
         """
-        summary_model = genai.GenerativeModel("gemini-1.5-flash")
+        summary_model = genai.GenerativeModel("gemini-2.0-flash")
         summary_response = summary_model.generate_content(summary_prompt)
         return summary_response.text.strip()
     else:
@@ -49,6 +49,7 @@ def get_relevant_chunks(query: str, collection, max_chunks=12):
 # Step 2: Prompt construction + model call
 def run(data: Dict) -> Dict:
     # Load required inputs
+    print("In step 3 - done embedding, doing model call + prompt construction")
     estimation_technique = data["estimation_technique"].lower()
     document_text = data["document_text"]
     chroma_path = data["chroma_session_path"]
@@ -116,12 +117,13 @@ Only provide valid JSON matching this output schema.
 IMPORTANT: Do NOT add explanations. Only return the final JSON output.
 """.strip()
 
-    model = genai.GenerativeModel("gemini-1.5-flash")
+    model = genai.GenerativeModel("gemini-2.0-flash")
     response = model.generate_content(
         prompt,
         generation_config={"max_output_tokens": 2000, "temperature": 0.0}
     )
-
+    print(response)
+    print("done with step 3")
     raw = response.text.strip()
     clean = re.sub(r"^```(?:json)?\s*|```$", "", raw.strip(), flags=re.MULTILINE)
 

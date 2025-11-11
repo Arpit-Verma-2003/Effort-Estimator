@@ -12,6 +12,7 @@ genai_api_key = os.getenv("GEMINI_API_KEY")
 genai.configure(api_key=genai_api_key)
 
 def run(data: Dict) -> Dict:
+    print("entered step 4")
     """
     Step 4: Generate a cost estimation plan using use-case data + metadata.
     Adds 'cost_estimation_output' to the data dict.
@@ -56,7 +57,8 @@ Only provide valid JSON data for the costEstimation output. Do not add any expla
 """.strip()
 
     # Call Gemini model
-    model = genai.GenerativeModel("gemini-1.5-flash")
+    print("making model call to generate rate card")
+    model = genai.GenerativeModel("gemini-2.0-flash")
     response = model.generate_content(
         cost_prompt,
         generation_config={"max_output_tokens": 2000, "temperature": 0.0}
@@ -65,7 +67,8 @@ Only provide valid JSON data for the costEstimation output. Do not add any expla
     # Parse response
     raw = response.text.strip()
     clean = re.sub(r"^```(?:json)?\s*|```$", "", raw.strip(), flags=re.MULTILINE)
-
+    print(clean)
+    print("step 4 complete above is response")
     try:
         cost_data = json.loads(clean)
         data["cost_estimation_output"] = cost_data
