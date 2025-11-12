@@ -66,7 +66,7 @@ async def estimate_effort(request: Request):
         step5_data = step5.run(step4_data)
 
         return JSONResponse(content={
-            "estimation_table": step5_data["estimation_output"]["properties"]["rows"],
+            "estimation_table": step5_data["estimation_output"]["rows"],
             "cost_estimation_table": step5_data["cost_estimation_output"]["rows"]
         })
     except Exception as e:
