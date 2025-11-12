@@ -314,10 +314,11 @@ const HomePage = () => {
                   required
                 >
                   <option value="">Select a technique</option>
-                  <option value="use-case based">Use Case Based</option>
+                  <option value="used-case based">Use Case Based</option>
                   <option value="cocomo">COCOMO</option>
-                  <option value="function point">Function Point</option>
-                  <option value="t-shirt sizing">T-Shirt Sizing</option>
+                  <option value="function point estimation">Function Point</option>
+                  <option value="story point estimation">Story Point</option>
+                  <option value="t-shirt sizing based">T-Shirt Sizing</option>
                 </select>
               </div>
 
