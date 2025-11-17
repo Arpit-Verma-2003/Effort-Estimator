@@ -284,123 +284,137 @@ const HomePage = () => {
             initial={{ opacity: 0, y: "100%" }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: "-100%" }}
-
             transition={{ duration: 0.7, ease: "easeInOut" }}
-            className="min-h-screen flex flex-col justify-center items-center px-10"
+            className="min-h-screen flex px-10 py-20"
           >
             <button
               onClick={() => setShowForm(false)}
-              className="absolute top-6 left-6 text-white hover:text-yellow-400 transition mt-20"
+              className="absolute top-6 left-6 text-white hover:text-yellow-400 transition mt-20 cursor-pointer"
             >
               ← Back
             </button>
 
-            <h2 className="text-4xl font-bold mb-10 text-center mt-25">
-              Provide Project Details
-            </h2>
+            <div className="w-[60%] pr-10 flex flex-col justify-center mt-15">
+              <h2 className="text-4xl font-bold mb-10">
+                Provide Project Details
+              </h2>
 
-            <form className="bg-blue-800 p-10 rounded-2xl shadow-xl w-full max-w-lg space-y-6"
-            onSubmit={handleSubmit}
-            >
-              <div>
-                <label className="block text-sm font-semibold mb-2">
-                  Estimation Technique
-                </label>
-                <select
-                  name="estimation_technique"
-                  value={formData.estimation_technique}
-                  onChange={handleInputChange}
-                  className="w-full p-3 rounded-lg text-black focus:outline-none"
-                  required
-                >
-                  <option value="">Select a technique</option>
-                  <option value="used-case based">Use Case Based</option>
-                  <option value="cocomo">COCOMO</option>
-                  <option value="function point estimation">Function Point</option>
-                  <option value="story point estimation">Story Point</option>
-                  <option value="t-shirt sizing based">T-Shirt Sizing</option>
-                </select>
-              </div>
-
-              <div>
-                <label className="block text-sm font-semibold mb-2">
-                  Project Type
-                </label>
-                <input
-                  type="text"
-                  name="project_type"
-                  value={formData.project_type}
-                  onChange={handleInputChange}
-                  placeholder="e.g. Web App"
-                  className="w-full p-3 rounded-lg text-black focus:outline-none"
-                  required
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-semibold mb-2">
-                  Project Scale
-                </label>
-                <div className="flex gap-6">
-                  {["Small", "Medium", "Large", "Mega"].map((scale) => (
-                    <label key={scale} className="flex items-center gap-2">
-                      <input
-                        type="radio"
-                        name="project_scale"
-                        value={scale}
-                        checked={formData.project_scale === scale}
-                        onChange={handleInputChange}
-                        className="accent-yellow-400"
-                        required
-                      />
-                      {scale}
-                    </label>
-                  ))}
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-sm font-semibold mb-2">
-                  Time Constraint (months)
-                </label>
-                <input
-                  type="number"
-                  name="time_constraint"
-                  value={formData.time_constraint}
-                  onChange={handleInputChange}
-                  min="1"
-                  placeholder="e.g. 3"
-                  className="w-full p-3 rounded-lg text-black focus:outline-none"
-                  required
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-semibold mb-2">
-                  Project Budget (INR)
-                </label>
-                <input
-                  type="number"
-                  min="0"
-                  name="project_budget"
-                  value={formData.project_budget}
-                  onChange={handleInputChange}
-                  placeholder="e.g. 50000"
-                  className="w-full p-3 rounded-lg text-black focus:outline-none"
-                  required
-                />
-              </div>
-
-              <button
-                type="submit"
-                disabled = {isSubmitting}
-                className={`w-full bg-yellow-400 text-black font-bold py-3 rounded-lg hover:bg-yellow-300 transition cursor-pointer${
-                  isSubmitting ? "opacity-50 cursor-not-allowed" : "hover:bg-yellow-300"
-                }`}
+              <form className="bg-blue-800 p-10 rounded-2xl shadow-xl w-full space-y-6"
+              onSubmit={handleSubmit}
               >
-                Generate Estimation
-              </button>
-            </form>
+                <div>
+                  <label className="block text-sm font-semibold mb-2">
+                    Estimation Technique
+                  </label>
+                  <select
+                    name="estimation_technique"
+                    value={formData.estimation_technique}
+                    onChange={handleInputChange}
+                    className="w-full p-3 rounded-lg text-black focus:outline-none"
+                    required
+                  >
+                    <option value="">Select a technique</option>
+                    <option value="used-case based">Use Case Based</option>
+                    <option value="cocomo">COCOMO</option>
+                    <option value="function point estimation">Function Point</option>
+                    <option value="story point estimation">Story Point</option>
+                    <option value="t-shirt sizing based">T-Shirt Sizing</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold mb-2">
+                    Project Type
+                  </label>
+                  <input
+                    type="text"
+                    name="project_type"
+                    value={formData.project_type}
+                    onChange={handleInputChange}
+                    placeholder="e.g. Web App"
+                    className="w-full p-3 rounded-lg text-black focus:outline-none"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold mb-2">
+                    Project Scale
+                  </label>
+                  <div className="flex gap-6">
+                    {["Small", "Medium", "Large", "Mega"].map((scale) => (
+                      <label key={scale} className="flex items-center gap-2">
+                        <input
+                          type="radio"
+                          name="project_scale"
+                          value={scale}
+                          checked={formData.project_scale === scale}
+                          onChange={handleInputChange}
+                          className="accent-yellow-400"
+                          required
+                        />
+                        {scale}
+                      </label>
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold mb-2">
+                    Time Constraint (months)
+                  </label>
+                  <input
+                    type="number"
+                    name="time_constraint"
+                    value={formData.time_constraint}
+                    onChange={handleInputChange}
+                    min="1"
+                    placeholder="e.g. 3"
+                    className="w-full p-3 rounded-lg text-black focus:outline-none"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold mb-2">
+                    Project Budget (INR)
+                  </label>
+                  <input
+                    type="number"
+                    min="0"
+                    name="project_budget"
+                    value={formData.project_budget}
+                    onChange={handleInputChange}
+                    placeholder="e.g. 50000"
+                    className="w-full p-3 rounded-lg text-black focus:outline-none"
+                    required
+                  />
+                </div>
+
+                <button
+                  type="submit"
+                  disabled = {isSubmitting}
+                  className={`w-full bg-yellow-400 text-black font-bold py-3 rounded-lg hover:bg-yellow-300 transition cursor-pointer${
+                    isSubmitting ? "opacity-50 cursor-not-allowed" : "hover:bg-yellow-300"
+                  }`}
+                >
+                  Generate Estimation
+                </button>
+              </form>
+            </div>
+            <div className="w-[40%] pl-10 border-l border-white/20 flex flex-col mt-15 justify-center">
+              <h2 className="text-3xl font-bold mb-6">
+                Here's what to expect from your free effort estimation
+              </h2>
+
+              <ul className="text-gray-200 space-y-4 text-lg leading-relaxed">
+                <li>✓ Technical complexity analysis</li>
+                <li>✓ Timeline & resource breakdown</li>
+                <li>✓ Cost estimation using your project budget</li>
+                <li>✓ Use Case / COCOMO / Function Point outputs</li>
+                <li>✓ A detailed effort table customized to your BRD</li>
+              </ul>
+            </div>
           </motion.section>
         )}
       </AnimatePresence>
