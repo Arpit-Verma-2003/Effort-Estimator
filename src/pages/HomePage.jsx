@@ -139,7 +139,7 @@ const HomePage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-blue-900 text-white overflow-hidden relative">
+    <div className="min-h-screen overflow-hidden relative">
       <Header />
 
       {/* ===================== Page Transition Wrapper ===================== */}
@@ -151,7 +151,7 @@ const HomePage = () => {
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, y: "-100%" }}
             transition={{ duration: 0.7, ease: "easeInOut" }}
-            className="min-h-screen flex items-center"
+            className="min-h-screen flex items-center bg-blue-900 text-white"
           >
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center pl-10 py-16 mt-20">
               {/* Left Side */}
@@ -285,11 +285,11 @@ const HomePage = () => {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: "-100%" }}
             transition={{ duration: 0.7, ease: "easeInOut" }}
-            className="min-h-screen flex px-10 py-20"
+            className="min-h-screen flex px-10 py-20 text-gray-800"
           >
             <button
               onClick={() => setShowForm(false)}
-              className="absolute top-6 left-6 text-white hover:text-yellow-400 transition mt-20 cursor-pointer"
+              className="absolute top-6 left-6 hover:text-yellow-400 transition mt-20 cursor-pointer"
             >
               ← Back
             </button>
@@ -299,7 +299,7 @@ const HomePage = () => {
                 Provide Project Details
               </h2>
 
-              <form className="bg-blue-800 p-10 rounded-2xl shadow-xl w-full space-y-6"
+              <form className="p-10 rounded-2xl shadow-xl w-full space-y-6 bg-cyan-100"
               onSubmit={handleSubmit}
               >
                 <div>
@@ -394,7 +394,7 @@ const HomePage = () => {
                 <button
                   type="submit"
                   disabled = {isSubmitting}
-                  className={`w-full bg-yellow-400 text-black font-bold py-3 rounded-lg hover:bg-yellow-300 transition cursor-pointer${
+                  className={`w-full bg-yellow-400 text-black font-bold py-3 rounded-lg hover:bg-yellow-300 transition cursor-pointer ${
                     isSubmitting ? "opacity-50 cursor-not-allowed" : "hover:bg-yellow-300"
                   }`}
                 >
@@ -402,17 +402,29 @@ const HomePage = () => {
                 </button>
               </form>
             </div>
-            <div className="w-[40%] pl-10 border-l border-white/20 flex flex-col mt-15 justify-center">
-              <h2 className="text-3xl font-bold mb-6">
-                Here's what to expect from your free effort estimation
+            <div className="w-[40%] pl-10 border-l border-black/20 flex flex-col mt-15">
+              <h2 className="text-3xl font-bold mb-6 text-center">
+                Here's what to expect from your <br/>free effort estimation
               </h2>
 
-              <ul className="text-gray-200 space-y-4 text-lg leading-relaxed">
-                <li>✓ Technical complexity analysis</li>
-                <li>✓ Timeline & resource breakdown</li>
-                <li>✓ Cost estimation using your project budget</li>
-                <li>✓ Use Case / COCOMO / Function Point outputs</li>
-                <li>✓ A detailed effort table customized to your BRD</li>
+              <ul className="text-gray-700 space-y-4 text-lg leading-relaxed grid grid-cols-2">
+                <div>
+                  <img src="./tech.svg" alt="img" />
+                  <li className="text-center mt-3">✓ Technical complexity analysis</li>
+                </div>
+                <div>
+                  <img src="./time.svg" alt="img" />
+                  <li className="text-center mt-3">✓ Timeline & resource breakdown</li>
+                </div>
+                <div>
+                  <img src="./tech.svg" alt="img" />
+                  <li className="text-center mt-3">✓ Cost estimation using your project budget</li>
+                </div>
+                <div>
+                  <img src="./tech.svg" alt="img" />
+                  <li className="text-center mt-3">✓ Use Case / COCOMO / Function Point outputs</li>
+                </div>
+                {/* <li className="text-center">✓ A detailed effort table customized to your BRD</li> */}
               </ul>
             </div>
           </motion.section>
