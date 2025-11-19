@@ -408,21 +408,21 @@ const HomePage = () => {
               </h2>
 
               <ul className="text-gray-700 space-y-4 text-lg leading-relaxed grid grid-cols-2">
-                <div>
-                  <img src="./tech.svg" alt="img" />
-                  <li className="text-center mt-3">✓ Technical complexity analysis</li>
+                <div className="mt-3">
+                  <img src="./tech.svg" alt="img" className="w-50"/>
+                  <li className="text-center mt-3 text-base font-semibold">✓ Technical complexity analysis</li>
                 </div>
-                <div>
-                  <img src="./time.svg" alt="img" />
-                  <li className="text-center mt-3">✓ Timeline & resource breakdown</li>
+                <div className="ml-5 mt-3">
+                  <img src="./time.svg" alt="img" className="w-50"/>
+                  <li className="text-center mt-3 text-base font-semibold">✓ Timeline & resource breakdown</li>
                 </div>
-                <div>
-                  <img src="./tech.svg" alt="img" />
-                  <li className="text-center mt-3">✓ Cost estimation using your project budget</li>
+                <div className="mt-8">
+                  <img src="./money.svg" alt="img" className="w-50" />
+                  <li className="text-center mt-4 text-base font-semibold">✓ Cost estimation using your project budget</li>
                 </div>
-                <div>
-                  <img src="./tech.svg" alt="img" />
-                  <li className="text-center mt-3">✓ Use Case / COCOMO / Function Point outputs</li>
+                <div className="ml-5 mt-8">
+                  <img src="./output.svg" alt="img" className="w-50" />
+                  <li className="text-center mt-4 text-base font-semibold">✓ Use Case / COCOMO / Function Point outputs</li>
                 </div>
                 {/* <li className="text-center">✓ A detailed effort table customized to your BRD</li> */}
               </ul>
