@@ -2,7 +2,9 @@ import React, { useState, useRef } from "react";
 import Header from "../components/Header";
 import { X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import axios from "axios";
+import { useGenerateEstimateMutation } from "../services/api";
+import LoadingScreen from "../components/LoadingScreen";
+import { useNavigate } from "react-router-dom";
 
 const HomePage = () => {
   const [file, setFile] = useState(null);
@@ -18,6 +20,8 @@ const HomePage = () => {
     project_budget: "",
   });
   const [isSubmitting,setIsSubmitting] = useState(false);
+  const [generateEstimation, {data, error, isLoading}] = useGenerateEstimateMutation();
+  const navigate = useNavigate();
 
   const handleInputChange = (e) => {
     const {name, value} = e.target;
@@ -48,8 +52,9 @@ const HomePage = () => {
         document_file: base64File,
         rate_card_file : "", //empty for now 
       }
-      const result = await axios.post(`${import.meta.env.VITE_BASE_URL}/estimate`,payload);
+      const result = await generateEstimation(payload).unwrap();
       console.log(result);
+      navigate("/result",{ state: { result } });
       alert("Result in console ready");
     }catch(error){
       console.error(error);
@@ -141,7 +146,7 @@ const HomePage = () => {
   return (
     <div className="min-h-screen overflow-hidden relative">
       <Header />
-
+      {(isSubmitting || isLoading) && <LoadingScreen />}
       {/* ===================== Page Transition Wrapper ===================== */}
       <AnimatePresence mode="wait">
         {!showForm ? (
