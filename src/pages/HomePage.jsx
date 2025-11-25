@@ -156,7 +156,7 @@ const HomePage = () => {
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, y: "-100%" }}
             transition={{ duration: 0.7, ease: "easeInOut" }}
-            className="min-h-screen flex items-center bg-blue-900 text-white"
+            className="min-h-screen flex items-center bg-gray-900 text-white"
           >
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center pl-10 py-16 mt-20">
               {/* Left Side */}
@@ -183,8 +183,8 @@ const HomePage = () => {
                   className={`relative cursor-pointer z-30 border-2 border-dashed rounded-xl p-10 text-center mt-12 shadow-lg mr-9 transition 
                     ${
                       isDragging
-                        ? "border-yellow-400 bg-blue-600"
-                        : "border-white/70 bg-blue-700"
+                        ? "border-yellow-400 bg-blue-700"
+                        : "border-white/70 bg-blue-900"
                     }`}
                 >
                   {!file ? (
