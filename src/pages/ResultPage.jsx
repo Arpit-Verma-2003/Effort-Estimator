@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import Header from "../components/Header";
 import {
@@ -10,8 +10,11 @@ import {
 const ResultPage = () => {
   const { state } = useLocation();
   const navigate = useNavigate();
-
   const result = state?.result;
+
+  useEffect(()=>{
+    window.scrollTo(0,0);
+  },[])
 
   if (!result)
     return (
@@ -169,7 +172,7 @@ return (
       <div className="flex justify-end mt-7">
         <button
           onClick={() => navigate("/")}
-          className="bg-yellow-400 text-black font-semibold py-3 px-8 rounded-lg hover:bg-yellow-300 transition shadow-md"
+          className="bg-yellow-400 text-black font-semibold py-3 px-8 rounded-lg cursor-pointer hover:bg-yellow-300 transition shadow-md"
         >
           ← Generate Again
         </button>

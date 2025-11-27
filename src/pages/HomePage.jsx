@@ -55,7 +55,6 @@ const HomePage = () => {
       const result = await generateEstimation(payload).unwrap();
       console.log(result);
       navigate("/result",{ state: { result } });
-      alert("Result in console ready");
     }catch(error){
       console.error(error);
       alert("error");
@@ -290,7 +289,7 @@ const HomePage = () => {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: "-100%" }}
             transition={{ duration: 0.7, ease: "easeInOut" }}
-            className="min-h-screen flex px-10 py-20 text-gray-800"
+            className="min-h-screen flex px-10 py-20 bg-blue-900 text-white"
           >
             <button
               onClick={() => setShowForm(false)}
@@ -304,7 +303,7 @@ const HomePage = () => {
                 Provide Project Details
               </h2>
 
-              <form className="p-10 rounded-2xl shadow-xl w-full space-y-6 bg-cyan-100"
+              <form className="p-10 rounded-2xl shadow-xl w-full space-y-6 bg-gray-900 text-white"
               onSubmit={handleSubmit}
               >
                 <div>
@@ -315,15 +314,15 @@ const HomePage = () => {
                     name="estimation_technique"
                     value={formData.estimation_technique}
                     onChange={handleInputChange}
-                    className="w-full p-3 rounded-lg text-black focus:outline-none"
+                    className="w-full p-3 rounded-lg focus:outline-none"
                     required
                   >
-                    <option value="">Select a technique</option>
-                    <option value="used-case based">Use Case Based</option>
-                    <option value="cocomo">COCOMO</option>
-                    <option value="function point estimation">Function Point</option>
-                    <option value="story point estimation">Story Point</option>
-                    <option value="t-shirt sizing based">T-Shirt Sizing</option>
+                    <option className="text-black" value="">Select a technique</option>
+                    <option className="text-black" value="used-case based">Use Case Based</option>
+                    <option className="text-black" value="cocomo">COCOMO</option>
+                    <option className="text-black" value="function point estimation">Function Point</option>
+                    <option className="text-black" value="story point estimation">Story Point</option>
+                    <option className="text-black" value="t-shirt sizing based">T-Shirt Sizing</option>
                   </select>
                 </div>
 
@@ -337,7 +336,7 @@ const HomePage = () => {
                     value={formData.project_type}
                     onChange={handleInputChange}
                     placeholder="e.g. Web App"
-                    className="w-full p-3 rounded-lg text-black focus:outline-none"
+                    className="w-full p-3 rounded-lg focus:outline-none text-white"
                     required
                   />
                 </div>
@@ -375,7 +374,7 @@ const HomePage = () => {
                     onChange={handleInputChange}
                     min="1"
                     placeholder="e.g. 3"
-                    className="w-full p-3 rounded-lg text-black focus:outline-none"
+                    className="w-full p-3 rounded-lg  focus:outline-none"
                     required
                   />
                 </div>
@@ -391,7 +390,7 @@ const HomePage = () => {
                     value={formData.project_budget}
                     onChange={handleInputChange}
                     placeholder="e.g. 50000"
-                    className="w-full p-3 rounded-lg text-black focus:outline-none"
+                    className="w-full p-3 rounded-lg  focus:outline-none"
                     required
                   />
                 </div>
@@ -412,7 +411,7 @@ const HomePage = () => {
                 Here's what to expect from your <br/>free effort estimation
               </h2>
 
-              <ul className="text-gray-700 space-y-4 text-lg leading-relaxed grid grid-cols-2">
+              <ul className="space-y-4 text-lg leading-relaxed grid grid-cols-2">
                 <div className="mt-3">
                   <img src="./tech.svg" alt="img" className="w-50"/>
                   <li className="text-center mt-3 text-base font-semibold">✓ Technical complexity analysis</li>
