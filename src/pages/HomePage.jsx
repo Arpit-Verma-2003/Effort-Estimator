@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import Header from "../components/Header";
 import { X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -22,6 +22,10 @@ const HomePage = () => {
   const [isSubmitting,setIsSubmitting] = useState(false);
   const [generateEstimation, {data, error, isLoading}] = useGenerateEstimateMutation();
   const navigate = useNavigate();
+  useEffect(()=>{
+              window.scrollTo(0,0);
+            },[])
+      
 
   const handleInputChange = (e) => {
     const {name, value} = e.target;
