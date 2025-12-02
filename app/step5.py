@@ -47,17 +47,6 @@ def run(data: Dict) -> Dict:
     estimation_summary = generate_table_summary(estimation_title, estimation_rows)
     cost_summary = generate_table_summary("Cost Estimation Table", cost_rows)
 
-    # Delete per-request ChromaDB folder
-    # session_path = data.get("chroma_session_path")
-    # if session_path and os.path.exists(session_path):
-    #     try:
-    #         shutil.rmtree(session_path)
-    #         print(f"🧹 Deleted ChromaDB folder: {session_path}")
-    #     except Exception as e:
-    #         print(f"⚠️ Could not delete {session_path}: {e}")
-
-    # Optional cleanup: input/output files (in local-only mode)
-
     # Return final output
     data["final_summary"] = {
         "estimation_table": estimation_summary,

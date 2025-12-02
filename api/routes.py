@@ -2,6 +2,8 @@ from fastapi import APIRouter, Request
 from fastapi.responses import JSONResponse
 from app import step1,step2,step3,step4,step5
 from utils.file_handler import extract_text_from_pdf
+from utils.cleanup import cleanup_all_chroma_sessions
+
 import uuid
 import os
 import base64
@@ -15,6 +17,7 @@ def hello():
 @router.post('/estimate')
 async def estimate_effort(request: Request):
     try:
+        cleanup_all_chroma_sessions()
         data = await request.json()
 
         estimation_technique = data["estimation_technique"]
